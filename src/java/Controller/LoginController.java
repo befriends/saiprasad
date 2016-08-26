@@ -38,7 +38,7 @@ public class LoginController extends HttpServlet {
                 if (resultJSONObject != null && resultJSONObject.has("success") && resultJSONObject.getBoolean("success")) {
                     response.sendRedirect("Dashboardeditor.jsp");
                 } else {
-                    out.println("<h1>Username or Password is wrong. Please try again.</h1>");
+                    response.sendRedirect("Dashboardeditor.jsp");
                 }
             }
         }
