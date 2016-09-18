@@ -45,33 +45,40 @@ public class PurchaseSellController extends HttpServlet {
 //            menuItemDAOObj = new MenuItemDaoImpl();
 
             int act = Integer.parseInt(request.getParameter("act"));
-            String module = request.getParameter("module");
+            String submodule = request.getParameter("submodule");
 
             switch (act) {
                 case 1: { // Add Methods
-                    switch (module) {
+                    switch (submodule) {
                         case "Purchase": {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            String snf = 
-                            params.put("code", request.getParameter("code"));
-                            params.put("type", request.getParameter("type"));
+                            HashMap<String, String> params = new HashMap<String, String>();                                                        params.put("code", request.getParameter("code"));
+                             params.put("date", request.getParameter("date"));
+                            params.put("milkid", request.getParameter("milkid"));
+                            params.put("customername", request.getParameter("customername"));
+                            params.put("milktype", request.getParameter("milktype"));
                             params.put("liter", request.getParameter("liter"));
                             params.put("fat", request.getParameter("fat"));
-                            params.put("lacto", request.getParameter("lacto"));
-                            params.put("remark", request.getParameter("remark"));
+                            params.put("lactose", request.getParameter("lactose"));
                             params.put("shift", request.getParameter("shift"));
-                            params.put("date", request.getParameter("date"));
+                            params.put("remark", request.getParameter("remark"));
                             resultJSONObject = PurchaseSellDaoObj.addMilkPurchaseDetails(params);
-                            response.sendRedirect("DailyCollection.jsp?result=" + resultJSONObject);
+                            response.sendRedirect("getDaillyCollection.jsp?result=" + resultJSONObject);
                         }
                         break;
-                        case "subcategory": {
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("customid", request.getParameter("customid"));
-//                            params.put("categoryid", request.getParameter("categoryid"));
-//                            params.put("subcategoryname", request.getParameter("subcategoryname"));
-//                            result = menuItemDAOObj.addSubCategory(params);
-//                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+                        case "PurchaseFood": {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("code", request.getParameter("code"));
+                            params.put("date", request.getParameter("date"));
+                            params.put("companyname", request.getParameter("companyname"));
+                            params.put("foodname", request.getParameter("foodname"));
+                            params.put("quantity",request.getParameter("quantity"));
+                            params.put("purchaserate", request.getParameter("purchaserate"));
+                            params.put("sellrate", request.getParameter("sellrate"));
+                            params.put("subtotal", request.getParameter("subtotal"));
+                            params.put("discount", request.getParameter("discount"));
+                            params.put("totalamount", request.getParameter("totalamount"));
+                            resultJSONObject = PurchaseSellDaoObj.addPurchaseFood(params);
+                            response.sendRedirect("PurchaseFood.jsp?result=" + resultJSONObject);
                         }
                         break;
                         case "menuitem": {
@@ -90,20 +97,20 @@ public class PurchaseSellController extends HttpServlet {
                 }
                 break;
                 case 2: { // Edit/Update Methods
-                    switch (module) {
+                    switch (submodule) {
                         case "Purchase": {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            String snf = 
-                            params.put("code", request.getParameter("code"));
-                            params.put("type", request.getParameter("type"));
-                            params.put("liter", request.getParameter("liter"));
-                            params.put("fat", request.getParameter("fat"));
-                            params.put("lacto", request.getParameter("lacto"));
-                            params.put("remark", request.getParameter("remark"));
-                            params.put("shift", request.getParameter("shift"));
-                            params.put("date", request.getParameter("date"));
-                            resultJSONObject = PurchaseSellDaoObj.updateMilkPurchaseDetails(params);
-                            response.sendRedirect("DailyCollection.jsp?result=" + resultJSONObject);
+//                            HashMap<String, String> params = new HashMap<String, String>();
+//                            String snf = 
+//                            params.put("code", request.getParameter("code"));
+//                            params.put("type", request.getParameter("type"));
+//                            params.put("liter", request.getParameter("liter"));
+//                            params.put("fat", request.getParameter("fat"));
+//                            params.put("lacto", request.getParameter("lacto"));
+//                            params.put("remark", request.getParameter("remark"));
+//                            params.put("shift", request.getParameter("shift"));
+//                            params.put("date", request.getParameter("date"));
+//                            resultJSONObject = PurchaseSellDaoObj.updateMilkPurchaseDetails(params);
+//                            response.sendRedirect("DailyCollection.jsp?result=" + resultJSONObject);
                         }
                         break;
                         case "subcategory": {
@@ -131,7 +138,7 @@ public class PurchaseSellController extends HttpServlet {
                 }
                 break;
                 case 3: { // Delete Methods
-                    switch (module) {
+                    switch (submodule) {
                         case "Purchase": {
 //                            HashMap<String, String> params = new HashMap<String, String>();
                             String id = request.getParameter("id").toString();
@@ -158,7 +165,7 @@ public class PurchaseSellController extends HttpServlet {
                     }
                 }
                 case 4: { // get data
-                    switch (module) {
+                    switch (submodule) {
                         case "category": {
 //                            HashMap<String, String> params = new HashMap<String, String>();
 //                            String id = request.getParameter("id").toString();
@@ -173,6 +180,15 @@ public class PurchaseSellController extends HttpServlet {
                             params.put("codeno", codeno);
                             JSONObject jsonObj = PurchaseSellDaoObj.getCollectionDetails(params);
                             response.getWriter().write(jsonObj.toString());
+                        }
+                        break;
+                            case "Purchase": {
+                            JSONObject responseJsonObj = new JSONObject();
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            String categoryid = request.getParameter("customername").toString();
+                            responseJsonObj = PurchaseSellDaoObj.getSubCategoryListJson(categoryid);
+//                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+                            response.getWriter().write(responseJsonObj.toString());
                         }
                         break;
                         case "menuitem": {

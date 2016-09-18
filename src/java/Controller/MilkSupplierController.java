@@ -21,7 +21,7 @@ import org.json.JSONObject;
  *
  * @author vishwas
  */
-@WebServlet(name = "addMilkman", urlPatterns = {"/addMilkman"})
+@WebServlet(name = "MilkSupplierController", urlPatterns = {"/MilkSupplierController"})
 public class MilkSupplierController extends HttpServlet {
     MilkSupplierDao MilkSupplierDaoObj = new MilkSupplierDaoImpl();
 
@@ -44,21 +44,22 @@ public class MilkSupplierController extends HttpServlet {
 //            menuItemDAOObj = new MenuItemDaoImpl();
 
             int act = Integer.parseInt(request.getParameter("act"));
-            String module = request.getParameter("module");
+            String module = request.getParameter("submodule");
 
             switch (act) {
                 case 1: { // Add Methods
                     switch (module) {
-                        case "Milksupplier": {
+                        case "RegistrationSuplier": {
                             HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("code", request.getParameter("milkmancode"));
-                            params.put("fname", request.getParameter("fname"));
-                            params.put("lname", request.getParameter("lname"));
-                            params.put("mobile", request.getParameter("mobile"));
-                            params.put("accountno", request.getParameter("accountno"));
-                            params.put("accountbank", request.getParameter("accountbank"));
+                            params.put("code", request.getParameter("code"));
+                            params.put("fname", request.getParameter("firstname"));
+                            params.put("lname", request.getParameter("lastname"));
+                            params.put("mobile", request.getParameter("mobilenumber"));
+                            params.put("accountno", request.getParameter("accountnumber"));
+                            params.put("accountbank", request.getParameter("acountbranch"));
                             params.put("address", request.getParameter("address"));
                             params.put("dairyname", request.getParameter("dairyname"));
+                            params.put("type", request.getParameter("type"));
                             result = MilkSupplierDaoObj.addMilkSupplier(params);
                             response.sendRedirect("AddSupplier.jsp?result=" + result);
                         }

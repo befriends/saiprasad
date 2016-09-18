@@ -24,4 +24,13 @@ public interface PurchaseSellDao {
      public JSONObject deleteMilkPurchaseDetails(String id) throws JSONException,IOException;
      
      public JSONObject getCollectionDetails(HashMap<String, String> params);
+     
+     public JSONObject getCategoryList() throws JSONException, IOException;
+      
+     public JSONObject getSubCategoryList() throws JSONException, IOException;
+       
+     public JSONObject getSubCategoryListJson(String categoryid) throws Exception;
+        
+     public JSONObject addPurchaseFood(HashMap<String, String> params) throws JSONException,IOException;
+    
 }

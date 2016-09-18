@@ -27,7 +27,7 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao{
     @Override
     public String addMilkSupplier(HashMap<String, String> params) {
         JSONObject jobj = null;
-        String code = "", fname = "", lname = "", accountno ="",accountbank = "",address ="",fullname="",dairyname="";
+        String code = "", fname = "", lname = "", accountno ="",accountbank = "",address ="",fullname="",dairyname="",type="";
         long mobile=0;
         try {
             code = StringUtils.isNotEmpty(params.get("code")) ? params.get("code") : "";
@@ -41,7 +41,8 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao{
             accountbank = StringUtils.isNotEmpty(params.get("accountbank")) ? params.get("accountbank") : "";
             address = StringUtils.isNotEmpty(params.get("address")) ? params.get("address") : "";
             dairyname = StringUtils.isNotEmpty(params.get("dairyname")) ? params.get("dairyname"):"";
-            fullname = fname+" "+lname;
+            type = StringUtils.isNotEmpty(params.get("type")) ? params.get("type"):"";
+             fullname = fname+" "+lname;
             conn = DBPool.getConnection();
 
             PreparedStatement pst = null;
@@ -52,7 +53,7 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao{
             rs.next();
 
             if (rs.getInt(1) == 0) {
-                pst = conn.prepareStatement("insert into milkmandetails(code, fullname,dairyname,mobile,accnumber,accbranch,addr) values(?,?,?,?,?,?,?)");
+                pst = conn.prepareStatement("insert into milkmandetails(code, fullname,dairyname,mobile,accnumber,accbranch,addr,type) values(?,?,?,?,?,?,?,?)");
                 pst.setString(1, code);
                 pst.setString(2, fullname);
                 pst.setString(3, dairyname);
@@ -60,6 +61,7 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao{
                 pst.setString(5, accountno);
                 pst.setString(6, accountbank);
                 pst.setString(7, address);
+                pst.setString(8, type);
 
                 int r = pst.executeUpdate();
                 if (r > 0) {
