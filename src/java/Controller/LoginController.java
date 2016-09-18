@@ -36,9 +36,9 @@ public class LoginController extends HttpServlet {
             } else {
                 JSONObject resultJSONObject = validLogin(request.getParameter("uname"), request.getParameter("password"));
                 if (resultJSONObject != null && resultJSONObject.has("success") && resultJSONObject.getBoolean("success")) {
-                    response.sendRedirect("Dashboardeditor.jsp");
+                    response.sendRedirect("Home.jsp");
                 } else {
-                    response.sendRedirect("Dashboardeditor.jsp");
+                    response.sendRedirect("Login.jsp");
                 }
             }
         }
