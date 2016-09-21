@@ -231,3 +231,20 @@ margin-right:auto;
 text-align:left;
 }
 
+            table {
+                font-family:serif;
+                border-collapse: collapse;
+                width: 120%;
+                text-align: auto;
+                background-color: buttonshadow;
+            }
+            td, th {
+                border: 1px solid #basic;
+                text-align:center;
+                background-color: buttonshadow;
+                padding: 5px;
+                animation-direction: alternate;
+            }
+
+      
+
