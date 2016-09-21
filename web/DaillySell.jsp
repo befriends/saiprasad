@@ -53,7 +53,8 @@
                     var lacto1 = lacto / 4;
                     var fat1 = 0.21 * fat;
                     var snf = lacto1 + fat1 + 0.36;
-                    $("#snf").val(snf);
+                  var  roundOff = Math.round(snf * 10) / 10;
+                    $("#snf").val(roundOff);
                 });
             });
         </script>
