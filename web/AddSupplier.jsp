@@ -26,21 +26,7 @@
         <script src="js/bootstrap.min.js"></script>
     </head>
     <script>
-        //    function validateForm() {
-        //    var x = document.forms["addMilkman_form"]["milkmancode"].value;
-        //    if (x == null || x == "") {
-        //        alert("Code must be filled out");
-        //        return false;
-        //    }
-        //}
-        //function isNumber(evt) {
-        //    evt = (evt) ? evt : window.event;
-        //    var charCode = (evt.which) ? evt.which : evt.keyCode;
-        //    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        //        return false;
-        //    }
-        //    return true;
-        //}
+
 
         function numbersonly(e) {
             var unicode = e.charCode ? e.charCode : e.keyCode
@@ -106,81 +92,116 @@
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="orderform" class="form-horizontal" action="MilkSupplierController" method="post"  onkeypress="myFunction()" onsubmit="return validate()">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="userid" class="control-label col-sm-3">Custom Id: </label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="codeid" name="code" value="<%=id%>" readonly="true" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
 
-                                <div class="form-group">
-                                    <label for="userid" class="control-label col-sm-2">Custom Id: </label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="codeid" name="code" value="<%=id%>" readonly="true" />
-                                    </div>
-                                </div>
+                                            <div class="form-group">
+                                                <label for="fullname" class="control-label col-sm-3">First Name</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="firstname" placeholder="Enter First Name" name="firstname" autofocus="true" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
 
-                                <div class="form-group">
-                                    <label for="fullname" class="control-label col-sm-2">First Name</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="firstname" placeholder="Enter First Name" name="firstname" autofocus="true" required=""/>
-                                    </div>
-                                </div>
+                                            <div class="form-group">
+                                                <label for="lastname" class="control-label col-sm-3">Last Name</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="dairyname" class="control-label col-sm-3">Dairy Name</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
 
-                                <div class="form-group">
-                                    <label for="lastname" class="control-label col-sm-2">Last Name</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" required=""/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="dairyname" class="control-label col-sm-2">Dairy Name</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" required=""/>
-                                    </div>
-                                </div>
+                                            <div class="form-group">
+                                                <label for="mobilenumber" class="control-label col-sm-3">Mobile Number</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="mobilenumber" placeholder="Enter Mobile Number" name="mobilenumber" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
 
-                                <div class="form-group">
-                                    <label for="mobilenumber" class="control-label col-sm-2">Mobile Number</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="mobilenumber" placeholder="Enter Mobile Number" name="mobilenumber" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
-                                    </div>
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="accountnumber" class="control-label col-sm-2">Account Number</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="accountnumber" placeholder="Enter Account Number" name="accountnumber" required=""/>
-                                    </div>
-                                </div>
+                                            <div class="form-group">
+                                                <label for="accountnumber" class="control-label col-sm-3">Account Number</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="accountnumber" placeholder="Enter Account Number" name="accountnumber" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
 
-                                <div class="form-group">
-                                    <label for="accountbranch" class="control-label col-sm-2">Account Branch</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="acountbranch" placeholder="Enter Account Branch" name="acountbranch" required=""/>
-                                    </div>
-                                </div>
+                                            <div class="form-group">
+                                                <label for="accountbranch" class="control-label col-sm-3">Account Branch</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="acountbranch" placeholder="Enter Account Branch" name="acountbranch" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
 
-                                <div class="form-group">
-                                    <label for="address" class="control-label col-sm-2">Address</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address" required=""/>
-                                    </div>
-                                </div>                              
-                                    <div class="form-group">
-                                        <label for="type"class="control-label col-sm-2">Select Type</label>
-                                        <div class="col-sm-8">
-                                            <select class="form-control" id="designation" placeholder="" name="type" required="">
-                                                <option value="">--Please Select Type</option>                                                 
-                                                <option value="COW">COW</option>
-                                                <option value="BUFFALO">BUFFALO</option>
-                                                    
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-offset-2 col-sm-5">
-                                        <button type="submit" name="submit" value="Add" class="btn btn-default">Add</button>
-                                        <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
-                                        <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="act" value="1" />
-                                <input type="hidden" name="submodule" value="RegistrationSuplier" />
+                                            <div class="form-group">
+                                                <label for="address" class="control-label col-sm-3">Address</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address" required=""/>
+                                                </div>
+                                            </div>  
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="type"class="control-label col-sm-3">Select Type</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" id="designation" placeholder="" name="type" required="">
+                                                        <option value="">--Please Select Type</option>                                                 
+                                                        <option value="COW">COW</option>
+                                                        <option value="BUFFALO">BUFFALO</option>
 
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button type="submit" name="submit" value="Add" class="btn btn-default">Add</button>
+                                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
+                                                    <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <input type="hidden" name="act" value="1" />
+                                    <input type="hidden" name="submodule" value="RegistrationSuplier" />
+                                </table>
                             </form>
                         </fieldset>    
                     </div>
