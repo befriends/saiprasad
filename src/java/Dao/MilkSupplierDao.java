@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Dao;
 
+import java.io.IOException;
 import java.util.HashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -15,5 +17,11 @@ import java.util.HashMap;
 public interface MilkSupplierDao {
 
     public String addMilkSupplier(HashMap<String, String> params);
+
+    public JSONObject getmilkMandetailsList() throws JSONException, IOException;
     
+    public JSONObject addDairyRegistration(HashMap<String, String> params) throws JSONException, IOException;
+    
+    public JSONObject getDairyMilkList() throws JSONException, IOException;
+
 }

@@ -7,6 +7,7 @@ package DaoImpl;
 
 import DBConnection.DBPool;
 import Dao.CommonDao;
+import com.mysql.jdbc.StringUtils;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -21,7 +22,7 @@ public class CommonDaoImpl implements CommonDao {
     @Override
     public String generateNextID(HashMap<String, String> params) {
 
-        String id = "";
+        String newCustomId = "";
         Connection con = null;
         try {
             String subModule = params.get("submodule");
@@ -29,38 +30,43 @@ public class CommonDaoImpl implements CommonDao {
             con = DBPool.getConnection();
             Statement st = con.createStatement();
 
-            ResultSet rs = st.executeQuery("select MAX(" + columnName + ") from " + subModule + ";");
+            ResultSet rs = st.executeQuery("select MAX("+ columnName +") from " + subModule + ";");
 
             int max = 0;
+            String customid = "";
 
             if (rs.next()) {
-
-                max = rs.getInt(1) + 1;
+                customid = rs.getString(1);
             }
-
-            switch (subModule) {
-                case "milkmandetails":
-                    id = "MLK" + max;
-                    break;
-                case "dairysell":
-                    id = "SL" + max;
-                    break;
-                case "sellentry":
-                    id = "SL" + max;
-                    break;
-                case "purchasefood":
-                    id = "FD" + max; //id="PD"+max;
-                    break;
-                case "foodsell":
-                    id = "FDS" + max;
-                    break;
-//                            
+            
+            if(!StringUtils.isNullOrEmpty(customid)){
+                String prefix = customid.split("-")[0];
+                long number = Long.parseLong(customid.split("-")[1]);
+                newCustomId = prefix + "-" + (number + 1);
+            } else{
+                switch (subModule) {
+                    case "milkmandetails":
+                        newCustomId = "MLK-1";
+                        break;
+                    case "dairyregistration":
+                        newCustomId = "DSL-1";
+                        break;
+                    case "sellentry":
+                        newCustomId = "SL-1";
+                        break;
+                    case "purchasefood":
+                        newCustomId = "FD-1"; //id="PD"+max;
+                        break;
+                    case "foodsell":
+                        newCustomId = "FDS-1";
+                        break;
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return id;
+        return newCustomId;
     }
 }

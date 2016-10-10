@@ -39,6 +39,7 @@ public class MilkSupplierController extends HttpServlet {
         String result = "";
         Boolean booleanResult = false;
         JSONObject jobj = null;
+         JSONObject resultJSONObject = new JSONObject();
         try {
             jobj = new JSONObject();
 //            menuItemDAOObj = new MenuItemDaoImpl();
@@ -64,13 +65,22 @@ public class MilkSupplierController extends HttpServlet {
                             response.sendRedirect("AddSupplier.jsp?result=" + result);
                         }
                         break;
-                        case "subcategory": {
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("customid", request.getParameter("customid"));
-//                            params.put("categoryid", request.getParameter("categoryid"));
-//                            params.put("subcategoryname", request.getParameter("subcategoryname"));
-//                            result = menuItemDAOObj.addSubCategory(params);
-//                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+                        case "AddDairyRegistration": {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("code", request.getParameter("code"));
+                            params.put("dairyname", request.getParameter("dairyname"));
+                            params.put("personname", request.getParameter("personname"));
+                            params.put("altername", request.getParameter("altername"));
+                            params.put("address", request.getParameter("address"));
+                            params.put("mobile", request.getParameter("mobile"));
+                            params.put("alternumber", request.getParameter("alternumber"));
+                            params.put("account", request.getParameter("account"));
+                            params.put("accountbranch", request.getParameter("accountbranch"));
+                            params.put("tankernumber", request.getParameter("tankernumber"));
+                            params.put("amount", request.getParameter("amount"));
+                            params.put("type", request.getParameter("type"));
+                            resultJSONObject = MilkSupplierDaoObj.addDairyRegistration(params);
+                            response.sendRedirect("DairyRegistration.jsp?result=" + resultJSONObject);
                         }
                         break;
                         case "menuitem": {

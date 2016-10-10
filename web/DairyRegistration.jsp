@@ -1,4 +1,6 @@
 <%@page import="org.json.JSONArray"%>
+<%@page import="DaoImpl.SellDaoImpl"%>
+<%@page import="Dao.SellDao"%>
 <%@page import="DaoImpl.MilkSupplierDaoImpl"%>
 <%@page import="Dao.MilkSupplierDao"%>
 <%@page import="DaoImpl.CommonDaoImpl"%>
@@ -14,7 +16,7 @@
 <html> 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Register Form </title>
+        <title>Sell Register Form </title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery.js"></script>
@@ -27,8 +29,6 @@
         <script src="js/bootstrap.min.js"></script>
     </head>
     <script>
-
-
         function numbersonly(e) {
             var unicode = e.charCode ? e.charCode : e.keyCode
             if (unicode != 8) { //if the key isn't the backspace key (which we should allow)
@@ -73,12 +73,12 @@
                         }
 
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("submodule", "milkmandetails"); // Database Table Name
+                        params.put("submodule", "dairyregistration"); // Database Table Name
                         params.put("columnname", "code"); // Database Column Name
                         CommonDao commonDaoObj = new CommonDaoImpl();
                         String id = commonDaoObj.generateNextID(params);
 
-                        MilkSupplierDao milkDAOObj = new MilkSupplierDaoImpl();
+                       MilkSupplierDao milkDAOObj = new MilkSupplierDaoImpl();
 //                            JSONObject jsonList = milkDAOObj.getMaterialList();
 
                     %>
@@ -87,7 +87,7 @@
                     %>
 
 
-                    <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Registration Form</span>
+                    <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Dairy Registration Form</span>
 
                     <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;">
                         <fieldset style="border:1px solid silver; padding:5px;">               
@@ -97,7 +97,7 @@
                                     <tr>
                                         <td>
                                             <div class="form-group">
-                                                <label for="userid" class="control-label col-sm-3">Custom Id: </label>
+                                                <label for="dairyid" class="control-label col-sm-3">Code: </label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="codeid" name="code" value="<%=id%>" readonly="true" />
                                                 </div>
@@ -106,9 +106,9 @@
                                         <td>
 
                                             <div class="form-group">
-                                                <label for="fullname" class="control-label col-sm-3">First Name</label>
+                                                <label for="dairyname" class="control-label col-sm-3">Dairy Name:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="firstname" placeholder="Enter First Name" name="firstname" autofocus="true" required=""/>
+                                                    <input type="text" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" autofocus="true" required=""/>
                                                 </div>
                                             </div>
                                         </td>
@@ -117,66 +117,92 @@
                                         <td>
 
                                             <div class="form-group">
-                                                <label for="lastname" class="control-label col-sm-3">Last Name</label>
+                                                <label for="personname" class="control-label col-sm-3">Person Name:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" required=""/>
+                                                    <input type="text" class="form-control" id="personname" name="personname" placeholder="Enter Person Name" required=""/>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group">
-                                                <label for="dairyname" class="control-label col-sm-3">Dairy Name</label>
+                                                <label for="altername" class="control-label col-sm-3">Alternate Name:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" required=""/>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <label for="mobilenumber" class="control-label col-sm-3">Mobile Number</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="mobilenumber" placeholder="Enter Mobile Number" name="mobilenumber" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-
-
-                                            <div class="form-group">
-                                                <label for="accountnumber" class="control-label col-sm-3">Account Number</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="accountnumber" placeholder="Enter Account Number" name="accountnumber" required=""/>
+                                                    <input type="text" class="form-control" id="altername" placeholder="Enter Alternate Name" name="altername" />
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-
                                             <div class="form-group">
-                                                <label for="accountbranch" class="control-label col-sm-3">Account Branch</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="acountbranch" placeholder="Enter Account Branch" name="acountbranch" required=""/>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <label for="address" class="control-label col-sm-3">Address</label>
+                                                <label for="address" class="control-label col-sm-3">Address:</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address" required=""/>
+                                                </div>
+                                            </div>   
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <label for="mobilenumber" class="control-label col-sm-3">Mobile Number:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="mobile" placeholder="Enter Mobile Number" name="mobile" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <label for="alternumber" class="control-label col-sm-3">Alternate No:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="aleternumber" placeholder="Enter Alternate Number" name="alternumber" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <label for="accountnumber" class="control-label col-sm-3">Account No:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="account" placeholder="Enter Account Number" name="account" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="accountbranch" class="control-label col-sm-3">Branch Name:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="acountbranch" placeholder="Enter Branch Name" name="accountbranch" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <label for="tankernumber" class="control-label col-sm-3">Tanker Number:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="tankerno" placeholder="Enter Tanker Number" name="tankernumber" required=""/>
                                                 </div>
                                             </div>  
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
+
                                             <div class="form-group">
-                                                <label for="type"class="control-label col-sm-3">Select Type</label>
+                                                <label for="amount" class="control-label col-sm-3">Amount:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="amount" placeholder="Enter Advanced Amount" name="amount"  required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="type"class="control-label col-sm-3">Select Type</label>;
                                                 <div class="col-sm-8">
                                                     <select class="form-control" id="designation" placeholder="" name="type" required="">
                                                         <option value="">--Please Select Type</option>                                                 
@@ -201,15 +227,16 @@
                                         </td>
                                     </tr>
                                     <input type="hidden" name="act" value="1" />
-                                    <input type="hidden" name="submodule" value="RegistrationSuplier" />
+                                    <input type="hidden" name="submodule" value="AddDairyRegistration" />
                                 </table>
+
                             </form>
-                        </fieldset> 
-                                                <%
-                            JSONObject milkManList = milkDAOObj.getmilkMandetailsList();
-                            JSONArray itemarr = milkManList.getJSONArray("data");
-                            if (milkManList != null && milkManList.has("success") && milkManList.has("data")) {
-                                itemarr = milkManList.getJSONArray("data");
+                        </fieldset>  
+                        <%
+                            JSONObject dairyMilkList = milkDAOObj.getDairyMilkList();
+                            JSONArray itemarr = dairyMilkList.getJSONArray("data");
+                            if (dairyMilkList != null && dairyMilkList.has("success") && dairyMilkList.has("data")) {
+                                itemarr = dairyMilkList.getJSONArray("data");
                             }
                         %>
 
@@ -219,9 +246,10 @@
                                     <th style="display: none;">ID</th>
                                     <th style="width: 10%;text-align: center;">Sr. No.</th>
                                     <th style="width: 10%;">Code</th>
-                                    <th style="width: 20%;">Type</th>                                    
-                                    <th style="width: 20%;">Name</th>
-                                    <th style="width: 20%;">mobile</th>
+                                    <th style="width: 10%;">Type</th>                                    
+                                    <th style="width: 15%;">DairyName</th>                                    
+                                    <th style="width: 20%;">MobileNumber</th>                                    
+                                    <th style="width: 15%;">AdvanceAmount</th>                                    
                                     <th style="width: 20%;">Action</th>
                                 </tr>
                             </thead>
@@ -235,27 +263,30 @@
                                 <tr class="info" id="editrecordid<%=cnt%>" style="display:none;">
                             <form name="editrecords">
                                 <td style="display: none;">
-                                    <label id="milkmanid" style="display: none;"><%=obj.getString("milkmanid")%>)%></label>
+                                    <label id="dairyid" style="display: none;"><%=obj.getString("dairyid")%>)%></label>
                                     <label id="submodule" style="display: none;">milkmandetails</label>
                                 </td>
                                 <td><label><%=cnt + 1%></label></td>
                                 <td style="display: none;">
-                                    <label id="milkmanid" style="display: none;"><%=obj.getString("milkmanid")%></label>
-                                    <label id="submodule" style="display: none;">milkmandetails</label>
+                                    <label id="dairyid" style="display: none;"><%=obj.getString("dairyid")%></label>
+                                    <label id="submodule" style="display: none;">DairyRegistration</label>
                                 </td>
                                 <td>
-                                    <input type="text" name="code" value="<%=obj.get("code")%>"  />
+                                    <input type="text" name="code" value="<%=obj.get("code")%>"/>
                                 </td>
                                 <td>
                                     <input type="text" name="type" value="<%=obj.get("type")%>"  />
                                 </td>
                                 <td>
-                                    <input type="text" name="fullname" value="<%=obj.get("fullname")%>"/>
+                                    <input type="text" name="dairyname" value="<%=obj.get("dairyname")%>"  />
                                 </td>
                                 <td>
-                                    <input type="text" name="mobile" value="<%=obj.get("mobile")%>"/>
+                                    <input type="text" name="mobile" value="<%=obj.get("mobile")%>"  />
                                 </td>
-                                
+                                <td>
+                                    <input type="text" name="amount" value="<%=obj.get("amount")%>"  />
+                                </td>
+
                                 <td>  <p class="btn btn-info" onClick="updaterecord(<%=cnt%>)"><span class="glyphicon glyphicon-save"></span>&nbsp;Save</p>
                                     &nbsp;|&nbsp;
                                     <p class="btn btn-default" onClick="cancel(<%=cnt%>)"><span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel</p></td>
@@ -263,14 +294,15 @@
                             </tr>
                             <tr class="success" id="recordid<%=cnt%>">
                                 <td style="display: none;">
-                                    <label id="milkmanid" style="display: none;"><%=obj.getString("milkmanid")%></label>
-                                    <label id="submodule" style="display: none;">milkmandetails </label>
+                                    <label id="dairyid" style="display: none;"><%=obj.getString("dairyid")%></label>
+                                    <label id="submodule" style="display: none;">DairyRegistration </label>
                                 </td>
                                 <td><label><%=cnt + 1%></label></td>
-                                <td><label name="code"><%=obj.get("code")%></label></td>
+                                <td><label name="fullname"><%=obj.get("code")%></label></td>
                                 <td><label name="type"><%=obj.get("type")%></label></td>
-                                <td><label name="fullname"><%=obj.get("fullname")%></label></td>
+                                <td><label name="dairyname"><%=obj.get("dairyname")%></label></td>
                                 <td><label name="mobile"><%=obj.get("mobile")%></label></td>
+                                <td><label name="amount"><%=obj.get("amount")%></label></td>
 
                                 <td>
                                     <p class="btn btn-success" onClick="showeditrecord(<%=cnt%>)"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</p>
@@ -284,14 +316,6 @@
                             %>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <script type="text/javascript" src="js/GridViewUserController.js"></script>   
-
                     </div>
                 </div>
             </div>

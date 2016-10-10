@@ -41,28 +41,28 @@ public class SellController extends HttpServlet {
             switch (act) {
                 case 1: { // Add Methods
                     switch (module) {
-                        case "AddDairySell": {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("code", request.getParameter("code"));
-                            params.put("dairyname", request.getParameter("dairyname"));
-                            params.put("personname", request.getParameter("personname"));
-                            params.put("altername", request.getParameter("altername"));
-                            params.put("address", request.getParameter("address"));
-                            params.put("mobile", request.getParameter("mobile"));
-                            params.put("alternumber", request.getParameter("alternumber"));
-                            params.put("account", request.getParameter("account"));
-                            params.put("accountbranch", request.getParameter("accountbranch"));
-                            params.put("tankernumber", request.getParameter("tankernumber"));
-                            params.put("amount", request.getParameter("amount"));
-                            params.put("type", request.getParameter("type"));
-                            resultJSONObject = sellDAOObj.addDairySell(params);
-                            response.sendRedirect("DairySellForm.jsp?result=" + resultJSONObject);
-                        }
-                        break;
+//                        case "AddDairySell": {
+//                            HashMap<String, String> params = new HashMap<String, String>();
+//                            params.put("code", request.getParameter("code"));
+//                            params.put("dairyname", request.getParameter("dairyname"));
+//                            params.put("personname", request.getParameter("personname"));
+//                            params.put("altername", request.getParameter("altername"));
+//                            params.put("address", request.getParameter("address"));
+//                            params.put("mobile", request.getParameter("mobile"));
+//                            params.put("alternumber", request.getParameter("alternumber"));
+//                            params.put("account", request.getParameter("account"));
+//                            params.put("accountbranch", request.getParameter("accountbranch"));
+//                            params.put("tankernumber", request.getParameter("tankernumber"));
+//                            params.put("amount", request.getParameter("amount"));
+//                            params.put("type", request.getParameter("type"));
+//                            resultJSONObject = sellDAOObj.addDairySell(params);
+//                            response.sendRedirect("DairySellForm.jsp?result=" + resultJSONObject);
+//                        }
+//                        break;
                         case "AddDaillySell": {
                             HashMap<String, String> params = new HashMap<String, String>();
                             params.put("date", request.getParameter("date"));
-                            params.put("customid", request.getParameter("customid"));
+                            params.put("dairyid", request.getParameter("dairyid"));
                             params.put("dairyname", request.getParameter("dairyname"));
                             params.put("milktype", request.getParameter("milktype"));
                             params.put("drivername", request.getParameter("drivername"));
@@ -100,7 +100,107 @@ public class SellController extends HttpServlet {
                     }
                 }
                 break;
+                    case 4: { // getdata
+                    switch (module) {
+                        case "sell": {
+                            JSONObject responseJsonObj = new JSONObject();
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            String customerid = request.getParameter("dairyid") == null ? request.getParameter("dairyname").toString(): request.getParameter("dairyid").toString();
+                            responseJsonObj = sellDAOObj.getMilkTypeListJson(customerid);
+//                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+                            response.getWriter().write(responseJsonObj.toString());
+                        }
+                        break;
+                        case "subcategory": {
+//                            HashMap<String, String> params = new HashMap<String, String>();
+//                            params.put("subcategoryid", request.getParameter("subcategoryid"));
+//                            params.put("subcategoryname", request.getParameter("subcategoryname"));
+//                            result = menuItemDAOObj.updateSubCategory(params);
+//                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+
+                        }
+                        break;
+                        case "menuitem": {
+//                            HashMap<String, String> params = new HashMap<String, String>();
+//                            params.put("id", request.getParameter("id"));
+//                            params.put("categoryid", request.getParameter("categoryid"));
+//                            params.put("subcategoryid", request.getParameter("subcategoryid"));
+//                            params.put("itemName", request.getParameter("itemname"));
+//                            params.put("rate", request.getParameter("rate"));
+//                            result = menuItemDAOObj.updateMenuItem(params);
+//                            response.sendRedirect("AddMenuItem.jsp?result=" + result);
+
+                        }
+                        break;
+                    }
+                }
+                break;
+//                case 3: { // Delete Methods
+//                    switch (submodule) {
+//                        case "Purchase": {
+////                            HashMap<String, String> params = new HashMap<String, String>();
+//                            String id = request.getParameter("id").toString();
+//                            resultJSONObject = PurchaseSellDaoObj.deleteMilkPurchaseDetails(id);
+////                            response.sendRedirect("AddCategory.jsp?result=" + result);
+//
+//                        }
+//                        break;
+//                        case "subcategory": {
+////                            HashMap<String, String> params = new HashMap<String, String>();
+////                            String id = request.getParameter("id").toString();
+////                            result = menuItemDAOObj.deleteSubCategory(id);
+////                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+//
+//                        }
+//                        break;
+//                        case "menuitem": {
+////                            HashMap<String, String> params = new HashMap<String, String>();
+////                            String id = request.getParameter("id").toString();
+////                            result = menuItemDAOObj.deleteMenuItem(id);
+////                            response.sendRedirect("AddMenuItem.jsp?result=" + result);
+//                        }
+//                        break;
+//                    }
+//                }
+//                case 4: { // get data
+//                    switch (submodule) {
+//                        case "category": {
+////                            HashMap<String, String> params = new HashMap<String, String>();
+////                            String id = request.getParameter("id").toString();
+////                            result = menuItemDAOObj.deleteCategory(id);
+////                            response.sendRedirect("AddCategory.jsp?result=" + result);
+//
+//                        }
+//                        break;
+//                        case "collection": {
+//                            HashMap<String, String> params = new HashMap<String, String>();
+//                            String codeno = request.getParameter("codeno").toString();
+//                            params.put("codeno", codeno);
+//                            JSONObject jsonObj = PurchaseSellDaoObj.getCollectionDetails(params);
+//                            response.getWriter().write(jsonObj.toString());
+//                        }
+//                        break;
+//                        case "sell": {
+//                            JSONObject responseJsonObj = new JSONObject();
+//                            HashMap<String, String> params = new HashMap<String, String>();
+//                            String customerid = request.getParameter("customerid") == null ? request.getParameter("customername").toString(): request.getParameter("customerid").toString();
+//                            responseJsonObj = PurchaseSellDaoObj.getSubCategoryListJson(customerid);
+////                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
+//                            response.getWriter().write(responseJsonObj.toString());
+//                        }
+//                        break;
+//                        case "menuitem": {
+////                            HashMap<String, String> params = new HashMap<String, String>();
+////                            String id = request.getParameter("id").toString();
+////                            result = menuItemDAOObj.deleteMenuItem(id);
+////                            response.sendRedirect("AddMenuItem.jsp?result=" + result);
+//                        }
+//                        break;
+                    
+                
+               
             }
+            
 
         } catch (Exception e) {
 

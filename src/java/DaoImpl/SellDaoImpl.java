@@ -13,7 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -29,82 +31,86 @@ public class SellDaoImpl implements SellDao {
 
     Connection conn = null;
 
-    @Override
-    public JSONObject addDairySell(HashMap<String, String> params) throws JSONException, IOException {
-        boolean result = false;
-        String milkmanid = "";
-        JSONObject resultJSONObject = new JSONObject();
-        String code = "", dairyName = "", personName = "", alternateName = "", Address = "", mobile = "", alternateNumber = "", accountNumber = "", branchName = "", tankerNumber = "", amount = "", type = "";
-        long id = 0;
-        try {
-            Connection conn = DBPool.getConnection();
-//            PreparedStatement pst = conn.prepareStatement("select id from milkmandetails where code = ?");
-//            pst.setString(1, params.get("code"));
+//    @Override
+//    public JSONObject addDairySell(HashMap<String, String> params) throws JSONException, IOException {
+//        boolean result = false;
+//        String milkmanid = "";
+//        JSONObject resultJSONObject = new JSONObject();
+//        String code = "", dairyName = "", personName = "", alternateName = "", Address = "", mobile = "", alternateNumber = "", accountNumber = "", branchName = "", tankerNumber = "", amount = "", type = "";
+//        long id = 0;
+//        try {
+//            Connection conn = DBPool.getConnection();
+////            PreparedStatement pst = conn.prepareStatement("select id from milkmandetails where code = ?");
+////            pst.setString(1, params.get("code"));
+////            ResultSet rs = pst.executeQuery();
+////            if (rs!=null) {
+////                while(rs.next()){
+////                    milkmanid = rs.getString(1);
+////                }
+//            code = StringUtils.isNotEmpty(params.get("code")) ? params.get("code") : "";
+//            dairyName = StringUtils.isNotEmpty(params.get("dairyname")) ? params.get("dairyname") : "";
+//            personName = StringUtils.isNotEmpty(params.get("personname")) ? params.get("personname") : "";
+//            alternateName = StringUtils.isNotEmpty(params.get("altername")) ? params.get("altername") : "";
+//            Address = StringUtils.isNotEmpty(params.get("address")) ? params.get("address") : "";
+//            mobile = StringUtils.isNotEmpty(params.get("mobile")) ? params.get("mobile") : "";
+//            alternateNumber = StringUtils.isNotEmpty(params.get("alternumber")) ? params.get("alternumber") : "";
+//            accountNumber = StringUtils.isNotEmpty(params.get("account")) ? params.get("account") : "";
+//            branchName = StringUtils.isNotEmpty(params.get("accountbranch")) ? params.get("accountbranch") : "";
+//            tankerNumber = StringUtils.isNotEmpty(params.get("tankernumber")) ? params.get("tankernumber") : "";
+//            amount = StringUtils.isNotEmpty(params.get("amount")) ? params.get("amount") : "";
+//            type = StringUtils.isNotBlank(params.get("type")) ? params.get("type") : "";
+//
+//            PreparedStatement pst = null;
+//            Statement st = conn.createStatement();
+//            pst = conn.prepareStatement("select count(*) from dairysell where dairyid = ?");
+//            pst.setString(1, code);
 //            ResultSet rs = pst.executeQuery();
-//            if (rs!=null) {
-//                while(rs.next()){
-//                    milkmanid = rs.getString(1);
+//            rs.next();
+//
+//            if (rs.getInt(1) == 0) {
+//
+//                pst = conn.prepareStatement("insert into dairysell(code,dairyname,personname,alternatename,mobile,alternatemobile,accountno,branchname,tankerno,amount,type) values(?,?,?,?,?,?,?,?,?,?,?)");
+//                pst.setString(1, code);
+//                pst.setString(2, dairyName);
+//                pst.setString(3, personName);
+//                pst.setString(4, alternateNumber);
+//                pst.setString(5, mobile);
+//                pst.setString(6, alternateNumber);
+//                pst.setString(7, accountNumber);
+//                pst.setString(8, branchName);
+//                pst.setString(9, tankerNumber);
+//                pst.setString(10, amount);
+//                pst.setString(11, type);
+//
+//                int r = pst.executeUpdate();
+//                if (r > 0) {
+//                    resultJSONObject.put("message", "Record Added Successfully.");
+//                    resultJSONObject.put("success", true);
+//                } else {
+//                    resultJSONObject.put("message", "Some error Occurred... Pease try again.");
+//                    resultJSONObject.put("success", false);
 //                }
-            code = StringUtils.isNotEmpty(params.get("code")) ? params.get("code") : "";
-            dairyName = StringUtils.isNotEmpty(params.get("dairyname")) ? params.get("dairyname") : "";
-            personName = StringUtils.isNotEmpty(params.get("personname")) ? params.get("personname") : "";
-            alternateName = StringUtils.isNotEmpty(params.get("altername")) ? params.get("altername") : "";
-            Address = StringUtils.isNotEmpty(params.get("address")) ? params.get("address") : "";
-            mobile = StringUtils.isNotEmpty(params.get("mobile")) ? params.get("mobile") : "";
-            alternateNumber = StringUtils.isNotEmpty(params.get("alternumber")) ? params.get("alternumber") : "";
-            accountNumber = StringUtils.isNotEmpty(params.get("account")) ? params.get("account") : "";
-            branchName = StringUtils.isNotEmpty(params.get("accountbranch")) ? params.get("accountbranch") : "";
-            tankerNumber = StringUtils.isNotEmpty(params.get("tankernumber")) ? params.get("tankernumber") : "";
-            amount = StringUtils.isNotEmpty(params.get("amount")) ? params.get("amount") : "";
-            type = StringUtils.isNotBlank(params.get("type")) ? params.get("type") : "";
-
-            PreparedStatement pst = null;
-            Statement st = conn.createStatement();
-            pst = conn.prepareStatement("select count(*) from dairysell where dairyid = ?");
-            pst.setString(1, code);
-            ResultSet rs = pst.executeQuery();
-            rs.next();
-
-            if (rs.getInt(1) == 0) {
-
-                pst = conn.prepareStatement("insert into dairysell(code,dairyname,personname,alternatename,mobile,alternatemobile,accountno,branchname,tankerno,amount,type) values(?,?,?,?,?,?,?,?,?,?,?)");
-                pst.setString(1, code);
-                pst.setString(2, dairyName);
-                pst.setString(3, personName);
-                pst.setString(4, alternateNumber);
-                pst.setString(5, mobile);
-                pst.setString(6, alternateNumber);
-                pst.setString(7, accountNumber);
-                pst.setString(8, branchName);
-                pst.setString(9, tankerNumber);
-                pst.setString(10, amount);
-                pst.setString(11, type);
-
-                int r = pst.executeUpdate();
-                if (r > 0) {
-                    resultJSONObject.put("message", "Record Added Successfully.");
-                    resultJSONObject.put("success", true);
-                } else {
-                    resultJSONObject.put("message", "Some error Occurred... Pease try again.");
-                    resultJSONObject.put("success", false);
-                }
-            } else {
-                resultJSONObject.put("success", "false");
-            }
-        } catch (Exception e) {
-
-            resultJSONObject.put("success", "false");
-            e.printStackTrace();
-        }
-        return resultJSONObject;
-    }
+//            } else {
+//                resultJSONObject.put("success", "false");
+//            }
+//        } catch (Exception e) {
+//
+//            resultJSONObject.put("success", "false");
+//            e.printStackTrace();
+//        }
+//        return resultJSONObject;
+//    }
 
     @Override
     public JSONObject addDailySell(HashMap<String, String> params) throws JSONException, IOException {
         boolean result = false;
 
         JSONObject resultJSONObject = new JSONObject();
-        String date = "", code = "", dairyName = "", milkType = "", driverName = "", liter = "", fat = "", lactose = "", shift = "", remark = "", tankerNumber = "", dairyid = "", type = "", SNF = "", protein = "", totalMilk = "";
+        String date = "", code = "",dairyId="", dairyName = "", milkType = "", driverName = "", liter = "", fat = "", lactose = "", shift = "", remark = "", tankerNumber = "", dairyid = "", type = "", SNF = "", protein = "", totalMilk = "";
+         double fatDiff = 0, snfDiff = 0, incrementPerFat = 0, incrementPerSNF = 0, decrementPerFat = 0, decreamentPerSNF = 0, fatAmount = 0, snfAmount = 0, enterFat = 0, enterSNF = 0, basicFat = 0, basicSNF = 0, bRate = 0, totalamount = 0, decrementAmount = 0,enterLactose=0;
+         String rategeneratorid = "";
+        DecimalFormat form = new DecimalFormat("#.##");
+        ResultSet rs = null;
         long id = 0;
         try {
             Connection conn = DBPool.getConnection();
@@ -116,7 +122,7 @@ public class SellDaoImpl implements SellDao {
 //                    milkmanid = rs.getString(1);
 //                }
             date = StringUtils.isNotEmpty(params.get("date")) ? params.get("date") : "";
-            code = StringUtils.isNotEmpty(params.get("customid")) ? params.get("customid") : "";
+             dairyId= StringUtils.isNotEmpty(params.get("dairyid")) ? params.get("dairyid") : "";
             dairyName = StringUtils.isNotEmpty(params.get("dairyname")) ? params.get("dairyname") : "";
             milkType = StringUtils.isNotEmpty(params.get("milktype")) ? params.get("milktype") : "";
             driverName = StringUtils.isNotEmpty(params.get("drivername")) ? params.get("drivername") : "";
@@ -126,34 +132,89 @@ public class SellDaoImpl implements SellDao {
             lactose = StringUtils.isNotEmpty(params.get("lactose")) ? params.get("lactose") : "";
             SNF = StringUtils.isNotEmpty(params.get("snf")) ? params.get("snf") : "";
             protein = StringUtils.isNotEmpty(params.get("protein")) ? params.get("protein") : "";
-//            totalMilk=StringUtils.isNotBlank(params.get("totalmilk"))? params.get("totalmilk") : "";
             shift = StringUtils.isNotEmpty(params.get("shift")) ? params.get("shift") : "";
             remark = StringUtils.isNotEmpty(params.get("remark")) ? params.get("remark") : "";
+            
+             PreparedStatement pst1 = null;
+            Statement st = conn.createStatement();
+            pst1 = conn.prepareStatement("select count(*) from sellentry where date = ? and dairyid = ? and tankerno=?");
+            pst1.setString(1, date);
+            pst1.setString(2, dairyId);
+            pst1.setString(3, tankerNumber);
+             rs = pst1.executeQuery();
+            rs.next();
+
+            int isbuffelo = 0, iscow = 0;
+            switch (milkType) {
+                case "COW":
+                    iscow = 1;
+                    break;
+                case "BUFFALO":
+                    isbuffelo = 1;
+                    break;
+            }
+            conn = DBPool.getConnection();
 
             PreparedStatement pst = null;
-            Statement st = conn.createStatement();
-            pst = conn.prepareStatement("select count(*) from sellentry where code = ?");
-            pst.setString(1, code);
-            ResultSet rs = pst.executeQuery();
-            rs.next();
+             st = conn.createStatement();
+            ResultSet rs1 = st.executeQuery("select rategeneratorid,brate,bfat,bsnf,dperfat,aperfat,dpersnf,apersnf from rategenerator where activeflag=1 and iscow=" + iscow + " and isbuffalo=" + isbuffelo);
+
+            while (rs1.next()) {
+                rategeneratorid = rs1.getString(1);
+                bRate = rs1.getDouble(2);
+                basicFat = rs1.getDouble(3);
+                basicSNF = rs1.getDouble(4);
+                decrementPerFat = rs1.getDouble(5);
+                incrementPerFat = rs1.getDouble(6);
+                decreamentPerSNF = rs1.getDouble(7);
+                incrementPerSNF = rs1.getDouble(8);
+                enterFat = Double.parseDouble(fat);
+                enterSNF = Double.parseDouble(SNF);
+                enterLactose = Double.parseDouble(lactose);
+            }
+
+            if (enterFat >= basicFat) {
+                fatDiff = Double.valueOf(form.format(enterFat - basicFat));
+                fatAmount = (fatDiff * incrementPerFat) * 10;
+            } else if (enterFat < basicFat) {
+                fatDiff = Double.valueOf(form.format(basicFat - enterFat));
+                fatAmount = (fatDiff * decrementPerFat) * 10;
+                fatAmount = -fatAmount;
+            }
+
+            if (enterSNF >= basicSNF) {
+                snfDiff = Double.valueOf(form.format(enterSNF - basicSNF));
+                snfAmount = (snfDiff * incrementPerSNF) * 10;
+            } else if (enterSNF < basicSNF) {
+                snfDiff = Double.valueOf(form.format(basicSNF - enterSNF));
+                snfAmount = (snfDiff * decreamentPerSNF) * 10;
+                snfAmount = -snfAmount;
+            }
+            double rate = bRate + Double.valueOf(form.format(fatAmount)) + Double.valueOf(form.format(snfAmount));
+            double totalMilk1 = Double.parseDouble(totalMilk);
+            totalamount = totalMilk1 * rate;
 
             if (rs.getInt(1) == 0) {
 
-                pst = conn.prepareStatement("insert into sellentry(code,drivername,tankerno,fat,lacto,snf,totalmilk,protein,remark,date,shift,dairyname,type) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                pst.setString(1, code);
-                pst.setString(2, driverName);
-                pst.setString(3, tankerNumber);
-                pst.setString(4, fat);
-                pst.setString(5, lactose);
-                pst.setString(6, SNF);
-                pst.setString(7, totalMilk);
-                pst.setString(8, protein);
+                pst = conn.prepareStatement("insert into sellentry(sellid,dairyid,drivername,tankerno,fat,lacto,snf,totalmilk,protein,remark,date,shift,dairyname,rategeneratorid,totalamount,type,rate) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                pst.setString(1, UUID.randomUUID().toString());
+                pst.setString(2, dairyId);
+                pst.setString(3, driverName);
+                pst.setString(4, tankerNumber);
+                pst.setString(5, fat);
+                pst.setString(6, lactose);
+                pst.setString(7, SNF);
+                pst.setDouble(8, totalMilk1);
+                pst.setString(9, protein);
 //                pst.setString(9, temprature);
-                pst.setString(9, remark);
-                pst.setString(10, date);
-                pst.setString(11, shift);
-                pst.setString(12, dairyName);
-                pst.setString(13, milkType);
+                pst.setString(10, remark);
+                pst.setString(11, date);
+                pst.setString(12, shift);
+                pst.setString(13, dairyName);
+                pst.setString(14, rategeneratorid);
+                pst.setDouble(15, totalamount);
+                pst.setString(16, milkType);
+                pst.setDouble(17, rate);
                 int r = pst.executeUpdate();
                 if (r > 0) {
                     resultJSONObject.put("message", "Record Added Successfully.");
@@ -163,6 +224,7 @@ public class SellDaoImpl implements SellDao {
                     resultJSONObject.put("success", false);
                 }
             } else {
+                resultJSONObject.put("message", "Tanker Number  is already used. Please try another.");
                 resultJSONObject.put("success", "false");
             }
         } catch (Exception e) {
@@ -189,7 +251,7 @@ public class SellDaoImpl implements SellDao {
 
             Statement st = conn.createStatement();
 
-            rs = st.executeQuery("select dairyid,dairyname from dairysell ");
+            rs = st.executeQuery("select dairyid,dairyname,type,code from dairyregistration ");
 
             if (null != rs) {
 
@@ -197,9 +259,11 @@ public class SellDaoImpl implements SellDao {
 
                     JSONObject jobj = new JSONObject();
 
-                    jobj.put("dairyid", rs.getLong(1));
+                    jobj.put("dairyid", rs.getString(1));
 
                     jobj.put("dairyname", null != rs.getString(2) ? rs.getString(2) : "");
+                    jobj.put("type", null != rs.getString(3) ? rs.getString(3) : "");
+                    jobj.put("code", null != rs.getString(4) ? rs.getString(4) : "");
 
                     jarr.put(jobj);
                 }
@@ -244,10 +308,7 @@ public class SellDaoImpl implements SellDao {
             discount = StringUtils.isNotEmpty(params.get("discount")) ? params.get("discount") : "";
             totalAmount = StringUtils.isNotEmpty(params.get("totalamount")) ? params.get("totalamount") : "";
             currentBill = StringUtils.isNotEmpty(params.get("currentbill")) ? params.get("currentbill") : "";
-//            tankerNumber=StringUtils.isNotEmpty(params.get("tankernumber"))? params.get("tankernumber") : "";
-//            amount=StringUtils.isNotEmpty(params.get("amount"))? params.get("amount") : "";
-//            type=StringUtils.isNotBlank(params.get("type"))? params.get("type") : "";
-//             
+             
 
             PreparedStatement pst = null;
             Statement st = conn.createStatement();
@@ -269,7 +330,6 @@ public class SellDaoImpl implements SellDao {
                 pst.setString(8, totalAmount);
                 pst.setString(9, currentBill);
                 pst.setString(10, code);
-//                pst.setString(11, type);
 
                 int r = pst.executeUpdate();
                 if (r > 0) {
@@ -343,7 +403,7 @@ public class SellDaoImpl implements SellDao {
     }
 
     @Override
-    public JSONObject getSubCategoryList() throws JSONException, IOException {
+    public JSONObject getSellEntryList(String selectedDate) throws JSONException, IOException {
 
         ResultSet rs = null;
 
@@ -359,8 +419,13 @@ public class SellDaoImpl implements SellDao {
 
             Statement st = conn.createStatement();
 
-//            String query = "Select sc.subcategoryid,sc.categoryid,sc.subcategoryname,sc.customid,c.categoryname from subcategory sc,category c where sc.categoryid=c.categoryid and sc.isdeleted=0 order by c.categoryname";
-            String query = "Select sellid,drivername,tankerno,totalmilk,date,type from sellentry";
+
+            String query = "";
+            if(selectedDate.equals("")){
+                query = "Select s.sellid,s.drivername,s.tankerno,s.totalmilk,s.date,s.type d.code s.dairyid from sellentry s,dairyregistration d where s.dairyid = d.dairyid";
+            } else{
+                query = "Select s.sellid,s.drivername,s.tankerno,s.totalmilk,s.date,s.type,d.code,s.dairyid from sellentry s,dairyregistration d where s.dairyid = d.dairyid and date='"+ selectedDate +"'";
+            }
 
             rs = st.executeQuery(query);
 
@@ -368,14 +433,14 @@ public class SellDaoImpl implements SellDao {
 
                 while (rs.next()) {
                     JSONObject jobj = new JSONObject();
-                    jobj.put("sellid", rs.getLong(1));
-                    // jobj.put("categoryid", rs.getLong(2));
+                    jobj.put("sellid", rs.getString(1));                    
                     jobj.put("drivername", null != rs.getString(2) ? rs.getString(2) : "");
                     jobj.put("tankerno", null != rs.getString(3) ? rs.getString(3) : "");
                     jobj.put("totalmilk", null != rs.getString(4) ? rs.getString(4) : "");
                     jobj.put("date", null != rs.getString(5) ? rs.getString(5) : "");
                     jobj.put("type", null != rs.getString(6) ? rs.getString(6) : "");
-
+                    jobj.put("code", null != rs.getString(7) ? rs.getString(7) : "");
+                    jobj.put("dairyid",rs.getString(8));
                     jarr.put(jobj);
                 }
             }
@@ -396,5 +461,47 @@ public class SellDaoImpl implements SellDao {
         }
         return returnJSONObject;
     }
+    @Override
+    public JSONObject getMilkTypeListJson(String categoryid) throws Exception {
+
+        JSONObject returnJSONObject = new JSONObject();
+        JSONArray jarr = new JSONArray();
+        ResultSet rs = null;
+        try {
+
+            conn = DBPool.getConnection();
+
+            Statement st = conn.createStatement();
+             String categoryId = com.mysql.jdbc.StringUtils.isNullOrEmpty(categoryid) ? "" : categoryid;
+
+//            long categoryId = Long.parseLong(id);
+
+            String query = "Select type from dairyregistration where dairyid= '"+ categoryId +"'";
+
+            rs = st.executeQuery(query);
+
+            if (null != rs) {
+
+                while (rs.next()) {
+                    JSONObject jobj = new JSONObject();
+                    jobj.put("id", null != rs.getString(1) ? rs.getString(1) : "");
+                    jobj.put("name", null != rs.getString(1) ? rs.getString(1) : "");
+                    jarr.put(jobj);
+                }
+            }
+            returnJSONObject.put("data", jarr);
+            returnJSONObject.put("isSuccess", true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            returnJSONObject.put("data", "");
+            returnJSONObject.put("isSuccess", false);
+        } finally {
+            conn.close();
+        }
+
+        return returnJSONObject;
+    }
+
 
 }

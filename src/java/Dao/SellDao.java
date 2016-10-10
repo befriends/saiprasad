@@ -16,7 +16,7 @@ import org.json.JSONObject;
  */
 public interface SellDao {
 
-    public JSONObject addDairySell(HashMap<String, String> params) throws JSONException, IOException;
+//    public JSONObject addDairySell(HashMap<String, String> params) throws JSONException, IOException;
 
     public JSONObject addDailySell(HashMap<String, String> params) throws JSONException, IOException;
 
@@ -26,6 +26,8 @@ public interface SellDao {
 
     public JSONObject getCategoryList() throws JSONException, IOException;
 
-    public JSONObject getSubCategoryList() throws JSONException, IOException;
+    public JSONObject getSellEntryList(String selectedDate) throws JSONException, IOException;
+
+    public JSONObject getMilkTypeListJson(String categoryid) throws Exception;
 
 }

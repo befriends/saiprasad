@@ -14,9 +14,7 @@
 <%!
     String message = "";
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd"
-    >
+
 <html> 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -24,12 +22,14 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        <link rel="stylesheet" href="css/jquery-ui.css">
         <!--style for menu-->
         <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>
 
         <!--script for menu-->
         <script type="text/javascript" src="js/responsivemultimenu.js"></script>
-        <script type="text/javascript" src="js/calendar.js"></script>
+        <!--<script type="text/javascript" src="js/calendar.js"></script>-->
         <script src="js/bootstrap.min.js"></script>
     </head>
     <script>
@@ -46,9 +46,45 @@
             if (obj.value.length > maxlength)
                 obj.value = obj.value.substring(0, maxlength)
         }
-        function resetform() {
-            document.getElementById("orderform").reset();
-        }
+        
+            function autoDate() {
+                var tDay = new Date();
+                var tMonth = tDay.getMonth() + 1;
+                var tDate = tDay.getDate();
+                if (tMonth < 10)
+                    tMonth = "0" + tMonth;
+                if (tDate < 10)
+                    tDate = "0" + tDate;
+                document.getElementById("datepicker").value = tDate + "/" + tMonth + "/" + tDay.getFullYear();
+            }
+
+            function addLoadEvent(func) {
+                var oldonload = window.onload;
+                if (typeof window.onload != 'function') {
+                    window.onload = func;
+                } else {
+                    window.onload = function() {
+                        if (oldonload) {
+                            oldonload();
+                        }
+                        func();
+                    }
+                }
+            }
+
+            addLoadEvent(function() {
+                autoDate();
+            });
+            $(document).ready(function ()
+            {
+            $("#datepicker").datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+});
+
+            function resetform() {
+                document.getElementById("orderform").reset();
+            }
     </script>
     <!--<style type="text/css">	
     </style>-->
@@ -79,7 +115,7 @@
 
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("submodule", "purchasefood"); // Database Table Name
-                        params.put("columnname", "purchaseid"); // Database Column Name
+                        params.put("columnname", "code"); // Database Column Name
                         CommonDao commonDaoObj = new CommonDaoImpl();
                         String id = commonDaoObj.generateNextID(params);
 
@@ -117,7 +153,7 @@
                                                 <label for="date" class="control-label col-sm-3">Purchase Date: </label>                                       
 
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="date-picker" id="date" placeholder="Enter Date" name="date" value="" required="" size=""/>
+                                                    <input type="text" class="date-picker" id="datepicker" placeholder="Enter Date" name="date" value="" required="" size=""/>
                                                 </div>
 
                                             </div>
@@ -225,7 +261,7 @@
 
                                         <td>
                                             <div class="form-group">
-                                                <div class="col-sm-offset-2 col-sm-10">
+                                                <div class="col-sm-offset-5 col-sm-10">
                                                     <button type="submit" name="submit" value="Add" class="btn btn-default">Add</button>
                                                     <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
                                                     <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
