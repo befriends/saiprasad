@@ -14,7 +14,11 @@
 <%!
     String message = "";
 %>
-
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <html> 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -25,10 +29,10 @@
         <script src="js/jquery-ui.js"></script>
         <link rel="stylesheet" href="css/jquery-ui.css">
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
 
         <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <!--<script type="text/javascript" src="js/calendar.js"></script>-->
         <script src="js/bootstrap.min.js"></script>
     </head>
@@ -264,7 +268,7 @@
                                                 <div class="col-sm-offset-5 col-sm-10">
                                                     <button type="submit" name="submit" value="Add" class="btn btn-default">Add</button>
                                                     <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
-                                                    <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
+                                                    <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
                                                 </div>
                                             </div>
                                         </td>

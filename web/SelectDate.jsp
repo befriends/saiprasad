@@ -4,7 +4,11 @@
     Author     : sai
 --%>
 
-
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,12 +20,12 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
        
        
         <script type="text/javascript" src="js/jquery.js"></script> 
         <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <script src="js/bootstrap.min.js"></script> 
          <script src="js/jquery-ui.js"></script>
         <link rel="stylesheet" href="css/jquery-ui.css">
@@ -58,13 +62,13 @@
                             <div class="form-group">
                                 <label for="datepicker" class="control-label col-sm-2">Select Date:</label>
                                 <div class="col-sm-8">
-                                    <input class="date-picker" type="text"  name="datepicker" value="" id="datepicker" placeholder="Select Date Here" autofocus="true" required=""/><br><br>
+                                    <input class="date-picker" type="text"  name="datepicker" value="" id="datepicker" placeholder="--- Select Date ---" autofocus="true" required=""/><br><br>
                                 </div>
                             </div>
                             <div class="form-group"> 
                                 <div class="col-sm-offset-2 col-sm-5">
                                     <button type="submit" name="submit" value="Add" class="btn btn-default" >Generate</button>
-                                    <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
+                                    <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
                                     <button type="button" name="cancel" onclick="resetform()" value="Reset" class="btn btn-default col-sm-offset-1">Reset</button>
                                 </div>
                             </div>

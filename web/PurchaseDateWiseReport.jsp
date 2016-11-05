@@ -15,6 +15,11 @@
     double grandTotal = 0;
     String date = "";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
      <head>
@@ -49,7 +54,7 @@
         </style>
         <% if (jarr.length() > 0) { %>
         <div style="text-align: right;font-size: 10px;">Date : <%=date%></div>
-        <%--<%@ include file="printHeader.jsp"%>--%>
+        <%@ include file="printHeader.jsp"%>
         <div style="font-size: 12px; font-weight: bold;text-align: center;">Daily Collection Report</div>
         <div style="text-align: center;width: 100%;margin-left: auto;margin-right: auto;font-size: 13px;">
             <hr style="border-width: 2px;border-color: black;">

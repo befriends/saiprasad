@@ -4,14 +4,23 @@
     Author     : sai
 --%>
 
+<%@page import="org.json.JSONObject"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="DaoImpl.RateGeneretorDaoImpl"%>
+<%@page import="Dao.RateGeneretorDao"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Rate Chart</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <!--<link href="css/style.css" rel="stylesheet" type="text/css"/>-->
         <script src="js/jquery.js"></script>
@@ -20,11 +29,44 @@
         <div class="container" style="font-size: 12px;">
         <%! double snf = 8.5, fat = 3.5, brate = 40.00, fatIncAmount = 0.15, fatDecAmount = 0.50, snfIncAmount = 0.20, snfDecAmount = 0.20;%>
         <% 
+            String chartTitle = "Rate Chart";
             double rowfat = 2.5, colsnf = 7.0;
             double chartfat = 2.5, chartsnf = 7.0;
             DecimalFormat df = new DecimalFormat("#.#");
             DecimalFormat form = new DecimalFormat("#.##");
+            int isPurchase = request.getParameter("ispurchase") != null ? Integer.parseInt(request.getParameter("ispurchase")) : 0;
+            int isSell = request.getParameter("issell") != null ? Integer.parseInt(request.getParameter("issell")) : 0;
+            int isCow = request.getParameter("iscow") != null ? Integer.parseInt(request.getParameter("iscow")) : 0;
+            int isBuffalo = request.getParameter("isbuffalo") != null ? Integer.parseInt(request.getParameter("isbuffalo")) : 0;
+            
+            HashMap<String, Integer> params = new HashMap<String, Integer>();
+            params.put("iscow", isCow);
+            params.put("isbuffalo", isBuffalo);
+            params.put("ispurchase", isPurchase);
+            params.put("issell", isSell);
+            
+            RateGeneretorDao rateGeneretorDao = new RateGeneretorDaoImpl();
+            JSONObject responseJobj = rateGeneretorDao.getChartDetails(params);
+            
+            snf = responseJobj.getDouble("snf");
+            fat = responseJobj.getDouble("fat");
+            brate = responseJobj.getDouble("brate");
+            fatIncAmount = responseJobj.getDouble("fatIncAmount");
+            fatDecAmount = responseJobj.getDouble("fatDecAmount");
+            snfIncAmount = responseJobj.getDouble("snfIncAmount");
+            snfDecAmount = responseJobj.getDouble("snfDecAmount");
+            
+            if(isCow == 1 && isPurchase == 1){
+                chartTitle = "Cow Purchase Rate Chart";
+            } else if(isBuffalo == 1 && isPurchase == 1){
+                chartTitle = "Buffalo Purchase Rate Chart";
+            } else if(isCow == 1 && isSell == 1){
+                chartTitle = "Cow Sell Rate Chart";
+            } else if(isBuffalo == 1 && isSell == 1){
+                chartTitle = "Buffalo Purchase Rate Chart";
+            }
         %>
+        <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;margin: 10px 10px 0px 10px;"><%=chartTitle %></span>
         <table style="border-collapse: collapse;margin-left: auto;margin-right: auto;">
             <% for(int row = 0; row <= 20; row++) { %>
             <tr>

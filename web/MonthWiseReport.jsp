@@ -16,6 +16,11 @@
     double grandTotal = 0;
     String month = "",year="";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -55,7 +60,7 @@
         <% if (jarr.length() > 0) { %>
 
         <div style="text-align: right;font-size: 10px;">Month / Year : <%=month%> / <%=year%></div>
-        <%--<%@ include file="printHeader.jsp"%>--%>
+        <%@ include file="printHeader.jsp"%>
         <div style="font-size: 12px; font-weight: bold;text-align: center;">Monthly Sale Report</div>
         <div style="text-align: center;width: 100%;margin-left: auto;margin-right: auto;font-size: 12px;">
             <table style="width: 100%;">
