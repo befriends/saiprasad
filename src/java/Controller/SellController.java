@@ -111,25 +111,22 @@ public class SellController extends HttpServlet {
                             response.getWriter().write(responseJsonObj.toString());
                         }
                         break;
-                        case "subcategory": {
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("subcategoryid", request.getParameter("subcategoryid"));
-//                            params.put("subcategoryname", request.getParameter("subcategoryname"));
-//                            result = menuItemDAOObj.updateSubCategory(params);
+                        case "StartDate": {
+                            JSONObject responseJsonObj = new JSONObject();
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            String dairyid = request.getParameter("dairyid") == null ? request.getParameter("dairyname").toString(): request.getParameter("dairyid").toString();
+                            responseJsonObj = sellDAOObj.getNewDate(dairyid);
 //                            response.sendRedirect("AddSubCategory.jsp?result=" + result);
-
+                            response.getWriter().write(responseJsonObj.toString());
                         }
                         break;
-                        case "menuitem": {
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("id", request.getParameter("id"));
-//                            params.put("categoryid", request.getParameter("categoryid"));
-//                            params.put("subcategoryid", request.getParameter("subcategoryid"));
-//                            params.put("itemName", request.getParameter("itemname"));
-//                            params.put("rate", request.getParameter("rate"));
-//                            result = menuItemDAOObj.updateMenuItem(params);
-//                            response.sendRedirect("AddMenuItem.jsp?result=" + result);
-
+                        case "billdetails": {
+                            JSONObject responseJsonObj = new JSONObject();
+                            String startDate = request.getParameter("startdate");
+                            String endDate = request.getParameter("enddate");
+                            String dairyId = request.getParameter("dairyid");
+                            responseJsonObj = sellDAOObj.getDairyMilkBillDetailsList(startDate, endDate, dairyId);
+                            response.getWriter().write(responseJsonObj.toString());
                         }
                         break;
                     }

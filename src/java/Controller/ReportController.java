@@ -97,6 +97,36 @@ public class ReportController extends HttpServlet {
                             response.sendRedirect("CustomerNameWiseReport.jsp?result=" + result);
                         }
                         break;
+                        case "CustomerNameAndDateWise":
+                        {
+                         HashMap<String , String> params  = new HashMap<String ,String>();
+                         params.put("customername", request.getParameter("customername"));
+                         params.put("startdate",request.getParameter("startdate"));
+                         params.put("enddate", request.getParameter("enddate"));
+                         result = recDao.CustomerNameAndDateWiseList(params);
+                         response.sendRedirect("CustomerNameAndDateWiseReport.jsp?result=" +result);
+                        }
+                        break;
+                        case "DairyNameAndDateWise":
+                        {
+                            HashMap<String , String> params = new HashMap<String,String>();
+                            params.put("dairyname", request.getParameter("dairyname"));
+                            params.put("startdate", request.getParameter("startdate"));
+                            params.put("enddate",request.getParameter("enddate"));
+                            result = recDao.DairyNameAndDateWiseList(params);
+                            response.sendRedirect("DairyNameAndDateWiseReport.jsp?result=" + result);
+                            
+                        }
+                        break;
+                             case "SelectCustomerNameAndDateWise":
+                        {
+                         HashMap<String , String> params  = new HashMap<String ,String>();
+                         params.put("customername", request.getParameter("customername"));
+                         params.put("startdate",request.getParameter("startdate"));
+                         params.put("enddate", request.getParameter("enddate"));
+                         result = recDao.CustomerNameAndDateList(params);
+                         response.sendRedirect("CustomerNameAndDatesWiseReport.jsp?result=" +result);
+                        }
                     }
                     break;
                 }

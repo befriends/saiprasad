@@ -60,6 +60,9 @@ public class CommonDaoImpl implements CommonDao {
                     case "foodsell":
                         newCustomId = "FDS-1";
                         break;
+                    case "expense":
+                        newCustomId = "EXP-1";
+                        break;
                 }
             }
 

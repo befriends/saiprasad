@@ -6,6 +6,7 @@
 package Dao;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,5 +24,7 @@ public interface MilkSupplierDao {
     public JSONObject addDairyRegistration(HashMap<String, String> params) throws JSONException, IOException;
     
     public JSONObject getDairyMilkList() throws JSONException, IOException;
+    
+    public JSONObject addAdvancePayment(HashMap<String, String> params) throws JSONException, IOException, SQLException;
 
 }

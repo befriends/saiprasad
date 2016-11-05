@@ -29,5 +29,9 @@ public interface SellDao {
     public JSONObject getSellEntryList(String selectedDate) throws JSONException, IOException;
 
     public JSONObject getMilkTypeListJson(String categoryid) throws Exception;
+    
+     public JSONObject getDairyMilkBillDetailsList(String startDate, String selectedDate,String dairyId) throws JSONException, IOException;
+     
+     public JSONObject getNewDate(String dairyid) throws Exception;
 
 }

@@ -73,7 +73,7 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao {
             rs.next();
 
             if (rs.getInt(1) == 0) {
-                pst = conn.prepareStatement("insert into milkmandetails(milkmanid, code, fullname,dairyname,mobile,accnumber,accbranch,addr,type) values(?,?,?,?,?,?,?,?,?)");
+                pst = conn.prepareStatement("insert into milkmandetails(milkmanid, code, fullname,dairyname,mobile,accnumber,accbranch,addr,type,registrationdate) values(?,?,?,?,?,?,?,?,?,?)");
                 String milkmanid = UUID.randomUUID().toString();
                 pst.setString(1, milkmanid);
                 pst.setString(2, code);
@@ -84,14 +84,15 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao {
                 pst.setString(7, accountbank);
                 pst.setString(8, address);
                 pst.setString(9, type);
+                pst.setLong(10, DateInLong);
 
                 int r = pst.executeUpdate();
-                PreparedStatement pst1 = null;
-                pst1 = conn.prepareStatement("insert into milkmanbillmapping(idmilkmanbillmapping,billgenerateddate,milkmanid) values(?,?,?)");
-                pst1.setString(1, UUID.randomUUID().toString());
-                pst1.setLong(2, DateInLong);
-                pst1.setString(3, milkmanid);
-                pst1.executeUpdate();
+//                PreparedStatement pst1 = null;
+//                pst1 = conn.prepareStatement("insert into milkmanbilldetails(idmilkmanbillmapping,billgenerateddate,milkmanid,startdate,enddate) values(?,?,?,?,?)");
+//                pst1.setString(1, UUID.randomUUID().toString());
+//                pst1.setLong(2, DateInLong);
+//                pst1.setString(3, milkmanid);
+//                pst1.executeUpdate();
                 if (r > 0) {
                     jobj = new JSONObject();
                     jobj.put("message", "Milkman Added Successfully.");
@@ -131,7 +132,7 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao {
             Statement st = conn.createStatement();
 
 //            String query = "Select sc.subcategoryid,sc.categoryid,sc.subcategoryname,sc.customid,c.categoryname from subcategory sc,category c where sc.categoryid=c.categoryid and sc.isdeleted=0 order by c.categoryname";
-            String query = "Select milkmanid,fullname,code,mobile,type from milkmandetails";
+            String query = "Select milkmanid,fullname,code,mobile,type from milkmandetails order by code";
 
             rs = st.executeQuery(query);
 
@@ -201,10 +202,20 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao {
             pst.setString(1, code);
             ResultSet rs = pst.executeQuery();
             rs.next();
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = new Date();
+            String adDate = (dateFormat.format(date));
+
+            String year = adDate.substring(adDate.lastIndexOf("/") + 1);
+            String month = adDate.substring(adDate.indexOf("/") + 1, adDate.lastIndexOf("/"));
+            String day = adDate.substring(0, adDate.indexOf("/"));
+
+            long DateInLong = new Date(year + "/" + month + "/" + day).getTime();
+
 
             if (rs.getInt(1) == 0) {
 
-                pst = conn.prepareStatement("insert into dairyregistration(dairyid,code,dairyname,personname,alternatename,mobile,alternatemobile,accountno,branchname,tankerno,amount,type) values(?,?,?,?,?,?,?,?,?,?,?,?)");
+                pst = conn.prepareStatement("insert into dairyregistration(dairyid,code,dairyname,personname,alternatename,mobile,alternatemobile,accountno,branchname,tankerno,amount,type,registrationdate) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 pst.setString(1, UUID.randomUUID().toString());
                 pst.setString(2, code);
                 pst.setString(3, dairyName);
@@ -217,7 +228,7 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao {
                 pst.setString(10, tankerNumber);
                 pst.setString(11, amount);
                 pst.setString(12, type);
-
+                pst.setLong(13, DateInLong);
                 int r = pst.executeUpdate();
                 if (r > 0) {
                     resultJSONObject.put("message", "Record Added Successfully.");
@@ -289,6 +300,61 @@ public class MilkSupplierDaoImpl implements MilkSupplierDao {
             returnJSONObject.put("message", e.getMessage());
         }
         return returnJSONObject;
+    }
+    
+    @Override
+    public JSONObject addAdvancePayment(HashMap<String, String> params) throws JSONException, IOException, SQLException {
+        boolean result = false;
+        String milkmanid = "";
+        JSONObject resultJSONObject = new JSONObject();
+        String addDate = "", personName = "", amount = "", reason = "", contactPersonName = "";
+        long id = 0;
+        try {
+            Connection conn = DBPool.getConnection();
+            conn.setAutoCommit(false);
+
+            addDate = StringUtils.isNotEmpty(params.get("datepicker")) ? params.get("datepicker") : "";
+            personName = StringUtils.isNotEmpty(params.get("personname")) ? params.get("personname") : "";
+            amount = StringUtils.isNotEmpty(params.get("amount")) ? params.get("amount") : "";
+            reason = StringUtils.isNotEmpty(params.get("reason")) ? params.get("reason") : "";
+            contactPersonName = StringUtils.isNotEmpty(params.get("contactpersonname")) ? params.get("contactpersonname") : "";
+           
+            PreparedStatement pst = null;
+//            Statement st = conn.createStatement();
+//            pst = conn.prepareStatement("select count(*) from dairyregistration where dairyid = ?");
+//            pst.setString(1, code);
+//            ResultSet rs = pst.executeQuery();
+//            rs.next();
+//
+//            if (rs.getInt(1) == 0) {
+
+                pst = conn.prepareStatement("insert into advancepayment(idadvancepayment,adddate,name,amount,reason,contactperson) values(?,?,?,?,?,?)");
+                pst.setString(1, UUID.randomUUID().toString());
+                pst.setString(2, addDate);
+                pst.setString(3, personName);
+                pst.setDouble(4, Double.parseDouble(amount));
+                pst.setString(5, reason);
+                pst.setString(6, contactPersonName);
+                int r = pst.executeUpdate();
+                if (r > 0) {
+                    resultJSONObject.put("message", "Record Added Successfully.");
+                    resultJSONObject.put("success", true);
+                } else {
+                    conn.rollback();
+                    resultJSONObject.put("message", "Some error Occurred... Pease try again.");
+                    resultJSONObject.put("success", false);
+                }
+//            } else {
+//                resultJSONObject.put("success", "false");
+//            }
+        } catch (Exception e) {
+            conn.rollback();
+            resultJSONObject.put("success", "false");
+            e.printStackTrace();
+        } finally{
+            conn.close();
+        }
+        return resultJSONObject;
     }
 
 }

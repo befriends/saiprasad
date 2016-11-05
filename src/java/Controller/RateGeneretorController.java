@@ -46,18 +46,18 @@ public class RateGeneretorController extends HttpServlet {
                     switch (submodule) {
                  case "AddRate": {
                             HashMap<String, String> params = new HashMap<String, String>();
-                             params.put("milktype", request.getParameter("milktype"));
+                            params.put("milktype", request.getParameter("milktype"));
                             params.put("fromfat", request.getParameter("fromfat"));
                             params.put("tofat", request.getParameter("tofat"));
                             params.put("fromsnf", request.getParameter("fromsnf"));
                             params.put("tosnf", request.getParameter("tosnf"));
                             params.put("fromrate", request.getParameter("fromrate"));
                             params.put("torate", request.getParameter("torate"));
-                            params.put("dfat", request.getParameter("dfat"));
-                            params.put("dsnf", request.getParameter("dsnf"));
+                            params.put("dfat", request.getParameter("decreaseratefat"));
+                            params.put("dsnf", request.getParameter("decreaseratesnf"));
                             params.put("rate", request.getParameter("rate"));
-                            params.put("asnf", request.getParameter("asnf"));
-                            params.put("afat", request.getParameter("afat"));
+                            params.put("asnf", request.getParameter("increaseratesnf"));
+                            params.put("afat", request.getParameter("increaseratefat"));
                             params.put("ratetype", request.getParameter("ratetype"));
                             params.put("applieddate", request.getParameter("applieddate"));
                             

@@ -208,6 +208,15 @@ public class PurchaseSellController extends HttpServlet {
                             response.getWriter().write(responseJsonObj.toString());
                         }
                         break;
+                        case "billdetails": {
+                            JSONObject responseJsonObj = new JSONObject();
+                            String startDate = request.getParameter("startdate");
+                            String endDate = request.getParameter("enddate");
+                            String milkManId = request.getParameter("milkmanid");
+                            responseJsonObj = PurchaseSellDaoObj.getMilkbilldetails(startDate, endDate, milkManId);
+                            response.getWriter().write(responseJsonObj.toString());
+                        }
+                        break;
                     }
                 }
                 break;

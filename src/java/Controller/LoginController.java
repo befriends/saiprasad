@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +37,10 @@ public class LoginController extends HttpServlet {
             } else {
                 JSONObject resultJSONObject = validLogin(request.getParameter("uname"), request.getParameter("password"));
                 if (resultJSONObject != null && resultJSONObject.has("success") && resultJSONObject.getBoolean("success")) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("UserName", resultJSONObject.get("username"));
+                    session.setAttribute("UserID", resultJSONObject.get("username"));
+                    session.setMaxInactiveInterval(1200);
                     response.sendRedirect("Home.jsp");
                 } else {
                     response.sendRedirect("Login.jsp");

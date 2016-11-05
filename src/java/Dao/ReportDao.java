@@ -23,4 +23,10 @@ public interface ReportDao {
     public String purchaseMonth(HashMap<String, String> params) throws JSONException;
 
     public String purchaseCustomerName(HashMap<String, String> params) throws JSONException;
+    
+    public String CustomerNameAndDateWiseList(HashMap<String, String> params) throws JSONException;
+    
+    public String DairyNameAndDateWiseList(HashMap<String, String> params) throws JSONException;
+    
+    public String CustomerNameAndDateList(HashMap<String, String> params) throws JSONException;
 }

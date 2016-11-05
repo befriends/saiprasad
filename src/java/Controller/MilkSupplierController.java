@@ -83,15 +83,15 @@ public class MilkSupplierController extends HttpServlet {
                             response.sendRedirect("DairyRegistration.jsp?result=" + resultJSONObject);
                         }
                         break;
-                        case "menuitem": {
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("customid", request.getParameter("customid"));
-//                            params.put("categoryid", request.getParameter("categoryid"));
-//                            params.put("subcategoryid", request.getParameter("subcategoryid"));
-//                            params.put("itemName", request.getParameter("itemName"));
-//                            params.put("rate", request.getParameter("rate"));
-//                            result = menuItemDAOObj.addMenuItem(params);
-//                            response.sendRedirect("AddMenuItem.jsp?result=" + result);
+                        case "advancepayment": {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("datepicker", request.getParameter("datepicker"));
+                            params.put("personname", request.getParameter("personname"));
+                            params.put("amount", request.getParameter("amount"));
+                            params.put("reason", request.getParameter("reason"));
+                            params.put("contactpersonname", request.getParameter("contactpersonname"));
+                            resultJSONObject = MilkSupplierDaoObj.addAdvancePayment(params);
+                            response.sendRedirect("AdvancePayment.jsp?result=" + resultJSONObject);
 
                         }
                         break;
