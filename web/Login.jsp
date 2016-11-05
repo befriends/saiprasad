@@ -1,42 +1,62 @@
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    if (session.getAttribute("UserName") == null) {
+
+    } else if (session.getAttribute("UserName") != null && request.getParameter("logout") == null) {
+        response.sendRedirect("Home.jsp");
+    } else if (session.getAttribute("UserName") != null && request.getParameter("logout") != null && Boolean.parseBoolean(request.getParameter("logout"))) {
+        session.invalidate();
+    }
+%>
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="UTF-8">
-    <link href="css/style.css" rel="stylesheet" type="text/css"/>
-    <title>Random Login Form</title>
-    
-    
-    
-    
-        <style>
-      /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-      @import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);
-      @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="css/voter login.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="css/normalize.css">
+        <title>Login Page</title>
+    </head>
+    <body style="background-color: gray;">
+        <% if (request.getParameter("invalidflag") != null && Boolean.parseBoolean(request.getParameter("invalidflag"))) { %>
+        <div style="text-align: center;background-color: wheat; padding: 5px; width: 70%;margin-left: auto;margin-right: auto;margin-top: 100px;">
+            <p style="font-family: arial; font-size: 20px; font-weight: bold; color: red;">
+                You entered wrong Username or Password. Please try again.
+            </p>
+        </div>
+        <% }%>
+        <!-----start-main---->
+        <div class="login-form">
+            <div class="head">
+                <img src="images/dairy.jpg" alt="" width="110" height="110" />
+            </div>
+            <form  action="validateLogin" name="login_form" method="post">
+                <div style="text-align: center; color: #c7254e; font-size: 12px">
+                    <label class="text" type="text" name="login1"><b>Login To Your Account</b></label></br>
+                </div>
+                <li>
+                    <input type="text" class="text" tabindex="1" value="USERNAME" name="uname" onfocus="this.value = '';" onblur="if (this.value == '') {
+                                this.value = 'USERNAME';
+                            }" ><a href="#" tabindex="0" class=" icon user"></a>
+                </li>
+                <li>
+                    <input type="password" value="Password" name="password" tabindex="2" onfocus="this.value = '';" onblur="if (this.value == '') {
+                                this.value = 'Password';
+                            }"><a href="#" tabindex="0" class="icon lock"></a>
+                </li>
+                <div class="p-container">
+                    <%-- <label class="checkbox"><input type="checkbox" name="checkbox" checked><i></i>Remember Me</label> --%>
+                    <input type="submit" tabindex="3" value="SIGN IN" >
+
+                </div>
+            </form>
+                <div style="text-align: center; color: #c7254e; font-style: italic; font-size: 12px">
+                    <label class="text" type="text" name="copyright">Copyright© <b>GaneshVishwa</b> All rights reserved.</label>
+                </div>
+        </div>
+
+        <!--//End-login-form-->
 
 
-
-
-    </style>
-
-    
-        <script src="js/prefixfree.min.js"></script>
-
-    
-  </head>
-  <body>
-
-    <div class="body"></div>
-		<div class="grad"></div>
-		<div class="header">
-		</div>
-		<br>
-		<div class="login">
-                    <form action="validateLogin" method="Post" name="login_form" style="color: orangered;">
-				<input type="text" placeholder="username" name="uname" style="color: red;"><br>
-				<input type="password" placeholder="password" name="password" style="color: red;"><br>
-                                <input type="submit" name="submit" value="Login" style="color: white; background:blueviolet"/>
-                                <input type="button" name="cancel" value="Exit"/>
-                    </form>
-		</div>
-  </body>
+    </body>
 </html>

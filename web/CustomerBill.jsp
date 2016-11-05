@@ -30,6 +30,11 @@
 
     String userID = "";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -43,10 +48,11 @@
         <script src="js/jquery-ui.js"></script>
         <link rel="stylesheet" href="css/jquery-ui.css">
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>     
+        <!--<link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>-->
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
         <!--script for menu-->
         <script src="js/commonFunctions.js"></script>
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <script src="js/bootstrap.min.js"></script>      
         <script type="text/javascript" lang="javascript" >
             function loadSubCategory(parentcomboId, setvaluecomboId) {
@@ -65,7 +71,13 @@
                         var issuccess = JSON.parse(responseobj).isSuccess;
                         if (issuccess) {
 //                        startDate = jsonObj[0];
-                            $("#dateid").val(jsonObj[0]);
+                            var startdate = jsonObj[0];
+                            $("#startdate").val(startdate);
+                            //setter
+                            var year = startdate.split("/")[2];
+                            var month = startdate.split("/")[1];
+                            var day = startdate.split("/")[0];
+                            $( "#enddate" ).datepicker( "option", "minDate", new Date(year+"/"+month+"/"+day) );
 
                         }
                         var selectedValue = $("#" + parentcomboId).val();
@@ -74,64 +86,121 @@
                 });
             }
            $(document).ready(function() {
+               
+               
 
-                $("#datepicker").datepicker({
+                $("#enddate").datepicker({
                     dateFormat: 'dd/mm/yy',
+                    maxDate: new Date(),
                    onSelect: function() {
-                        var selectedDate = $("#datepicker").val();
-                        var selectedDateForJava = $("#dateid").val();
-                        var milkManId = $("#milkmanid").val();
-                        $("#customerbillform")[0].action = "CustomerBill.jsp";
-                        window.location = "?selectedDate=" + selectedDate + "&startDate=" + selectedDateForJava + "&milkManId=" + milkManId;
-                        
-//                         $("#datepicker").val(selectedDate);
-//                         $("#dateid").val(selectedDateForJava);
-//                         $("#milkmanid").val(milkManId);
+                       $.ajax({
+                            url: "dailyCollection",
+                            context: document.body,
+                            method: "POST",
+                            data: {
+                                enddate : $("#enddate").val(),
+                                startdate : $("#startdate").val(),
+                                milkmanid : $("#milkmanid").val(),
+                                act: 4,
+                                submodule:"billdetails"
+                            },
+                            success: function(responseObj) {
+                                var response = JSON.parse(responseObj).data;
+                                $("#billingdetailstable tr td").remove();
+                                var billDetailsTable = $("#billingdetailstable");
+                                var totalamount = 0;
+                                var totalmilk = 0;
+                                for(var ind = 0; ind < response.length; ind++){
+                                    var tr = document.createElement("tr");
+                                    var td1 = document.createElement("td");
+                                    td1.innerHTML = ind + 1;
+                                    tr.appendChild(td1);
+                                    var td2 = document.createElement("td");
+                                    td2.innerHTML = response[ind].date;
+                                    tr.appendChild(td2);
+                                    var td3 = document.createElement("td");
+                                    td3.innerHTML = response[ind].type;
+                                    tr.appendChild(td3);
+                                    var td4 = document.createElement("td");
+                                    td4.innerHTML = response[ind].fat;
+                                    tr.appendChild(td4);
+                                    var td5 = document.createElement("td");
+                                    td5.innerHTML = response[ind].lacto;
+                                    tr.appendChild(td5);
+                                    var td6 = document.createElement("td");
+                                    td6.innerHTML = response[ind].snf;
+                                    tr.appendChild(td6);
+                                    var td7 = document.createElement("td");
+                                    td7.innerHTML = response[ind].totalmilk;
+                                    tr.appendChild(td7);
+                                    totalmilk += response[ind].totalmilk;
+                                    var td8 = document.createElement("td");
+                                    td8.innerHTML = response[ind].rate;
+                                    tr.appendChild(td8);
+                                    var td9 = document.createElement("td");
+                                    td9.innerHTML = response[ind].totalamount;
+                                    tr.appendChild(td9);
+                                    totalamount += response[ind].totalamount;
+
+                                    billDetailsTable.append(tr);
+                                }
+                                $("#totalliter").val(totalmilk);
+                                $("#subtotal").val(totalamount);
+                                $("#tamount").val(totalamount);
+                            }
+                        });
                     }
                 });
             });
-//            $(document).ready(function() {
-//                 $("#datepicker").click(function() {
-//                      $('#datepick').datepicker('show');
-//                        var selectedDate = $("#datepicker").val();
-//                        var selectedDateForJava = $("#dateid").val();
-//                        var milkManId = $("#milkmanid").val();
-//                        $("#customerbillform")[0].action = "CustomerBill.jsp";
-//                        window.location = "?selectedDate=" + selectedDate + "&startDate=" + selectedDateForJava + "&milkManId=" + milkManId;
-//           
-//           });
-//        });
 
             $(document).ready(function() {
                 $("#commissionid").change(function() {
-
-                    var commission = parseFloat($("#commissionid").val());
-                    var totalliter = parseInt($("#totalliter").val());
-                    var totcommission = commission * totalliter;
-                    $("#totalcommission").val(totcommission);
-
+                    var totalAmount = parseFloat($("#tamount").val() === "" ? "0" : $("#tamount").val());
+                    if(totalAmount > 0){
+                        var commission = parseFloat($("#commissionid").val() === "" ? "0" : $("#commissionid").val());
+                        var totalliter = parseInt($("#totalliter").val());
+                        var totcommission = commission * totalliter;
+                        $("#totalcommission").val(totcommission);
+                        calculateTotal();
+//                        var totalCommission = totcommission;
+//                        var subTotal = parseFloat($("#subtotal").val());
+//                        var amountAfterDeduction = (subTotal + totalCommission);
+//                        $("#tamount").val(amountAfterDeduction);
+                    } else{
+                        $("#commissionid").val("");
+                    }
                 });
                 $("#deductionid").change(function() {
-                    var deductionid = parseFloat($("#deductionid").val());
-                    $("#deduction").val(deductionid);
-
-                });
-                $("#commissionid").change(function() {
-
-                    var totalcommission = parseFloat($("#totalcommission").val());
-                    var total = parseFloat($("#tamount").val());
-                    var totalam = (total + totalcommission);
-                    $("#tamount").val(totalam);
-                });
-                $("#deductionid").change(function() {
-
-                    var ded = parseFloat($("#deduction").val());
-                    var total = parseFloat($("#tamount").val());
-                    var dedtotal = total - ded;
-                    $("#tamount").val(dedtotal);
-
+                    var totalAmount = parseFloat($("#tamount").val() === "" ? "0" : $("#tamount").val());
+                    if(totalAmount > 0){
+                        var deductionAmount = parseFloat($("#deductionid").val() === "" ? "0" : $("#deductionid").val());
+                        $("#totaldeduction").val(deductionAmount);
+                        calculateTotal();
+//                        var subTotal = parseFloat($("#subtotal").val());
+//                        var amountAfterDeduction = subTotal - deductionAmount;
+//                        $("#tamount").val(amountAfterDeduction);
+                    } else{
+                        $("#deductionid").val("");
+                    }
                 });
             });
+            
+            function calculateTotal(){
+                var totalAmount = parseFloat($("#tamount").val() === "" ? "0" : $("#tamount").val());
+                if(totalAmount > 0){
+                    var subTotal = parseFloat($("#subtotal").val());
+                    var totalliter = parseInt($("#totalliter").val());
+                    var commission = parseFloat($("#commissionid").val() === "" ? "0" : $("#commissionid").val());
+                    var deductionAmount = parseFloat($("#deductionid").val() === "" ? "0" : $("#deductionid").val());
+                    var totalCommission = commission * totalliter;
+                    
+                    var finalAmount = ((subTotal - deductionAmount) + totalCommission);
+                    $("#tamount").val(finalAmount);
+                } else{
+                    $("#commissionid").val("");
+                    $("#deductionid").val("");
+                }
+            }
 
 
             function resetform() {
@@ -155,7 +224,7 @@
             <div class="container-fluid">
 
                 <div style="margin-left: auto; margin-right: auto; width: 100%; background-color:powderblue;">
-                    <%  //                                                           Only for  Disply message after execution
+                    <%  // Only for  Disply message after execution
                         if (request.getParameter("result") != "" && request.getParameter("result") != null) {
                             JSONObject jobj = new JSONObject(request.getParameter("result"));
                             message = jobj.getString("message");
@@ -179,14 +248,16 @@
                                 selectedDate = request.getParameter("selectedDate");
                             }
                         %>
-
+                       <div>
+                           <img src="images/Milk.jpg" alt="" width="1110" height="110" />
                     <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Customer Bill Generation Form</span>
+                       </div>
 
-                    <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;font-size: 10px;">
+                    <div style="max-height: 600px;font-size: 10px;">
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="customerbillform" class="form-horizontal" action="dailyCollection" method="post">
-                                <table>
+                                <table style="width:100%;">
                                     <tr>
                                         <td>
                                             <div class="form-inline">
@@ -229,18 +300,18 @@
                                     <tr>
                                         <td>
                                             <div class="form-inline">
-                                                <label for="date"class="control-label col-sm-3">Starting Date : </label>
+                                                <label for="startdate" class="control-label col-sm-3">Starting Date : </label>
                                                 <div class="col-sm-8 text-left">
-                                                    <input type="text" id="dateid" placeholder="Stariting Date" name="dateid" value="" readonly="true" required=""/>
+                                                    <input type="text" id="startdate" placeholder="Stariting Date" name="startdate" value="" readonly="true" required=""/>
 
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-inline">
-                                                <label for="datepicker" class="control-label col-sm-3" >Ending Date : </label>
+                                                <label for="enddate" class="control-label col-sm-3" >Ending Date : </label>
                                                 <div class="col-sm-8 text-left">
-                                                    <input type="text" class="date-picker" selected="true" id="datepicker" name="date" value="" placeholder="--- Select End Date ---" required="" />
+                                                    <input type="text" class="date-picker" selected="true" id="enddate" name="enddate" value="" placeholder="--- Select End Date ---" required="" />
                                                 </div>
                                             </div>
                                         </td>
@@ -276,21 +347,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                    </tr>                                    
-                                    <!--                                    <tr>
-                                                                            <td>
-                                    
-                                                                                <div class="form-group"> 
-                                    
-                                                                                    <div class="col-sm-offset-4 col-sm-10">
-                                                                                        <button type="submit" name="submit" id="submit" value="Add" class="btn btn-default">Add </button>
-                                                                                        <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
-                                                                                        <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>-->
-
+                                    </tr>                                                                       
                                     <input type="hidden" name="act" value="1" />
                                     <input type="hidden" name="submodule" value="AddDaillySell" />
                                 </table>
@@ -308,7 +365,7 @@
                         %>
 
                         <div class="container-fluid" style="height: 350px;overflow: scroll;text-align: center;">
-                            <table class="table table-condensed table-bordered table-hover"style="table-layout:fixed;" id="tbl" >
+                            <table class="table table-condensed table-bordered table-hover" style="table-layout:fixed;" id="billingdetailstable" >
                                 <thead>
                                     <tr class="gridrowheight">
                                         <th style="display: none;">ID</th>
@@ -335,38 +392,6 @@
 
 
                                     %>
-                                    <tr class="info gridrowheight" id="editrecordid<%=cnt%>" style="display:none;">
-                                <form name="editrecords">
-                                    <td style="display: none;">
-                                        <label id="purchaseid" style="display: none;"><%=obj.getString("purchaseid")%>)%></label>
-                                        <label id="submodule" style="display: none;">daillycollection</label>
-                                    </td>
-                                    <td><label><%=cnt + 1%></label></td>
-                                    <td style="display: none;">
-                                        <label id="purchaseid" style="display: none;"><%=obj.getString("purchaseid")%></label>
-                                        <label id="submodule" style="display: none;">daillycollection</label>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="date" value="<%=obj.get("date")%>"/></td>
-                                    <td>
-                                        <input type="text" name="type" value="<%=obj.get("type")%>"/></td>
-
-                                    <td>
-                                        <input type="text" name="fat" value="<%=obj.get("fat")%>" readonly />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="lacto" value="<%=obj.get("lacto")%>"/>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="snf" value="<%=obj.get("snf")%>"/>
-                                    </td>
-                                    <td> <input type="text" name="totalmilk" value="<%=obj.get("totalmilk")%>"/></td>
-                                    <td>
-                                        <input type="text" name="rate" value="<%=obj.get("rate")%>"/></td>
-                                    <td>   <input id="total" type="text" name="totalamount" value="<%=obj.get("totalamount")%>"/></td>
-
-                                </form>
-                                </tr>
                                 <tr class="success gridrowheight" id="recordid<%=cnt%>">
                                     <td style="display: none;">
                                         <label id="purchaseid" style="display: none;"><%=obj.getString("purchaseid")%></label>
@@ -410,7 +435,7 @@
 
                                     <td>
                                         <div class="form-inline">
-                                            <label for="text"class="control-label col-sm-3">TotalMilk: </label>
+                                            <label for="text"class="control-label col-sm-3">Total Milk: </label>
                                             <div class="col-sm-9 text-left">
                                                 <input type="text" id="totalliter" placeholder="0.00" name="totalliter" value="<%=grandMilkTotal%>" required="" readonly="true"/>
 
@@ -422,109 +447,136 @@
                                         <div class="form-inline">
                                             <label for="text"class="control-label col-sm-3">Deduction: </label>
                                             <div class="col-sm-9 ">
-                                                <input type="text" id="deduction" placeholder="0.00" name="deduction" value="" readonly="true"/>
+                                                <input type="text" id="totaldeduction" placeholder="0.00" name="deduction" value="" readonly="true"/>
 
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-
                                         <div class="form-inline">
                                             <label for="text"class="control-label col-sm-3">Total: </label>
                                             <div class="col-sm-8">
-                                                <input type="text" id="tamount" placeholder="0.00" name="tamount" value="<%=grandTotal%>" readonly="true"/>
-
+                                                <input type="hidden" id="subtotal" placeholder="0.00" name="subtotal" readonly="true"/>
+                                                <input type="text" id="tamount" placeholder="0.00" name="tamount" readonly="true"/>
                                             </div>
                                         </div>
                                     </td>
                                     <td></td>
                                     <td></td><td></td>
-
-
                                 </tr>
                             </table>
-                            <div class="form-group"> 
-
-                                <div class="col-sm-offset-4 col-sm-10">
-                                    <button type="submit" name="submit" id="submit" value="Add"  onclick="proceedorder()" class="btn btn-default">Generate </button>
-                                    <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
-                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
+                                               
+                                <div class="form-group"> 
+                                <div class="col-sm-offset-3 col-sm-10" style="padding-top: 10px;padding-bottom: 10px;">
+                                    
+                                    <button type="submit" name="submit" id="submit" value="Add"  onclick="generatebill()" style="width: 7em;" class="btn btn-success">Generate </button>&nbsp;&nbsp;
+                                     <button type="button" onclick="printbill()" target=_blank" style="width: 7em;" onclick="generatebill()" class="btn btn-warning " >Print Bill</button>&nbsp;&nbsp;
+                                    <button type="button" name="cancel" value="Cancel" class="btn btn-danger" style="width: 7em; onClick="window.location = 'Home.jsp'">Cancel</button>&nbsp;&nbsp;
+                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel"  style="width: 7em;" class="btn btn-primary">Reset</button>
                                 </div>
                             </div>
-
-
-
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--                                                <script type="text/javascript" lang="javascript">
-                    function proceedorder() {
-                        var billingtable = $('#tbl tbody tr');
-                        var cnt;
-                        var jsonarr = [];
-        
-                        if (billingtable.length > 0) {
-                            for (cnt = 0; cnt < billingtable.length; cnt++) {
-                                var trEle = $('#billingtable tbody tr[id=row' + cnt + ']');
-                                var menuitemid = $('#billingtable tbody tr[id=row' + cnt + '] td[id=idmenuitem' + cnt + ']').text();
-                                var message = $('#billingtable tbody tr[id=row' + cnt + '] td[id=idmessage' + cnt + ']').text();
-                                var quantity = $('#billingtable tbody tr[id=row' + cnt + '] td[id=idquantity' + cnt + ']').text();
-                                var rate = $('#billingtable tbody tr[id=row' + cnt + '] td[id=idrate' + cnt + ']').text();
-                                var subtotal = $('#billingtable tbody tr[id=row' + cnt + '] td[id=idsubtotal' + cnt + ']').text();
-        
-                                var jsonobj = {};
-                                jsonobj["menuitemid"] = menuitemid;
-                                jsonobj["message"] = message;
-                                jsonobj["quantity"] = quantity;
-                                jsonobj["rate"] = rate;
-                                jsonobj["subtotal"] = subtotal;
-        
-                                jsonarr.push(jsonobj);
-                            }
-                            var orderjsonlist = {};
-                            orderjsonlist ["data"] = jsonarr;
-                            orderjsonlist ["userid"] = "<%=userID%>";
-                            if ($('#tableno :selected')[0].index === 0) {
-                                alert("Please select table for proceed order.");
-                                return false;
-                            }
-                            orderjsonlist ["tableid"] = $('#tableno :selected').val();
-                            var tno = $('#tableno :selected').text();
-                            orderjsonlist ["tableno"] = tno.substr(tno.length - 7, 6);
-                            var status = $('#tableno :selected')[0].isbooked;
-        
-                            var isbooked = false;
-                            if (status === 1) {
-                                isbooked = true;
-                            }
-        
-                            $.ajax({
-                                url: "dailyCollection",
-                                context: document.body,
-                                method: "POST",
-                                data: {
-                                    act: 1, // act=1 => action 1 is for saving order to DB.
-                                    submodule:"AddDaillyMilk",
-        //                            orderlistjson: JSON.stringify(orderjsonlist)
-                                },
-                                success: function(responseObj) {
-                                    alert('Order proceeded.....');
-                                    location.reload();
-                                }
-                            });
-                        } else {
-                            alert("Order list is empty. Please add menu's to order list.");
-                        }
-                    }
-                            
-           </script>-->
         <script type = "text/javascript" src = "js/GridViewUserController.js" ></script> 
+        <script type="text/javascript" lang="javascript">
+            function generatebill(){
+                if($("#tamount").val() !== "" && $("#tamount").val() !== "0" && $("#totalliter").val() !== "" && $("#totalliter").val() !== "0"){
+                    $.ajax({
+                        url: "BillingController",
+                        context: document.body,
+                        method: "POST",
+                        data: {
+                            milkmanid : $("#milkmanid").val(),
+                            milkmanname : $("#milkmanname").val(),
+                            startdate : $("#startdate").val(),
+                            enddate : $("#enddate").val(),
+                            commission : $("#commissionid").val() === "" ? "0" : $("#commissionid").val(),
+                            deduction : $("#deductionid").val() === "" ? "0" : $("#deductionid").val(),
+                            remarks : $("#remarkid").val(),
+                            subtotal : $("#subtotal").val(),
+                            totalamount : $("#tamount").val(),
+                            totalcommission : $("#totalcommission").val() === "" ? "0" : $("#totalcommission").val(),
+                            totaldeduction : $("#totaldeduction").val() === "" ? "0" : $("#totaldeduction").val(),
+                            totalmillk : $("#totalliter").val(),
+                            act : 1,
+                            submodule : "customerbill"
+                        },
+                        success: function(responseObj){
+                           var isSuccess = JSON.parse(responseObj).success;
+                           if(isSuccess){
+                               var message = JSON.parse(responseObj).message;
+                               alert(message);
+                               location.reload();
+                           } else{
+                               var errormessage = JSON.parse(responseObj).errormessage;
+                               alert(errormessage);
+                           }
+                        }
+                    })
+                } else{
+                    alert("Bill can't be generated because total amount is 0 or empty.");
+                }
+            }
+            function printbill(){
+                
+                         if($("#tamount").val() !== "" && $("#tamount").val() !== "0" && $("#totalliter").val() !== "" && $("#totalliter").val() !== "0"){
+                    $.ajax({
+                        url: "BillingController",
+                        context: document.body,
+                        method: "POST",
+                        data: {
+                            milkmanid : $("#milkmanid").val(),
+                            milkmanname : $("#milkmanname").val(),
+                            startdate : $("#startdate").val(),
+                            enddate : $("#enddate").val(),
+                            commission : $("#commissionid").val() === "" ? "0" : $("#commissionid").val(),
+                            deduction : $("#deductionid").val() === "" ? "0" : $("#deductionid").val(),
+                            remarks : $("#remarkid").val(),
+                            subtotal : $("#subtotal").val(),
+                            totalamount : $("#tamount").val(),
+                            totalcommission : $("#totalcommission").val() === "" ? "0" : $("#totalcommission").val(),
+                            totaldeduction : $("#totaldeduction").val() === "" ? "0" : $("#totaldeduction").val(),
+                            totalmillk : $("#totalliter").val(),
+                            act : 1,
+                            submodule : "customerbill"
+                        },
+                        success: function(responseObj){
+                           var isSuccess = JSON.parse(responseObj).success;
+                           if(isSuccess){
+                               var message = JSON.parse(responseObj).message;
+                               alert(message);
+                            $('#milkmanid').val("");
+                            $('#milkmanname').val("");
+                            $('#startdate').val("");    
+                            $('#enddate').val("");    
+                            $('#commissionid').val("");
+                            $('#deductionid').val("");    
+                            $('#remarkid').val("");    
 
-
-
+                               location.reload();
+                           } else{
+                               var errormessage = JSON.parse(responseObj).errormessage;
+                               alert(errormessage);
+                           }
+                        }
+                    })
+                } else{
+                    alert("Bill can't be generated because total amount is 0 or empty.");
+                }
+           
+                        var totalcommission = $("#totalcommission").val();
+                        var totaldeduction = $("#totaldeduction").val();
+                        var totalliter = $("#totalliter").val();
+                        var totalamount = $("#tamount").val();
+                        var startDate = $("#startdate").val();
+                        var selectedDate = $("#enddate").val();
+                        var milkManId = $("#milkmanid").val();
+                        var remark =$("#remarkid").val();
+                        window.open('CustomerBillPrint.jsp?totalcommission='+totalcommission+'&totaldeduction='+totaldeduction+'&totalliter='+totalliter+'&startDate='+startDate+'&selectedDate=<%=selectedDate %>&milkManId='+milkManId+'&remark='+remark+'&totalamount='+totalamount, '_blank');
+                    }
+        </script>
     </body>
 </html>

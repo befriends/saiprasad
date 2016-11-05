@@ -8,6 +8,11 @@
 <%!
     String message = "";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
     "http://www.w3.org/TR/html4/strict.dtd"
     >
@@ -19,12 +24,13 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery.js"></script>
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
 
         <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
 
         <script src="js/bootstrap.min.js"></script>
+        
     </head>
     <script>
 
@@ -89,45 +95,28 @@
 
                     <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Registration Form</span>
 
-                    <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;">
+                    
+                    <!--<div style="overflow-y: scroll;overflow-x: hidden;;">-->
+                    <div style="max-height: 600px;">
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="orderform" class="form-horizontal" action="MilkSupplierController" method="post"  onkeypress="myFunction()" onsubmit="return validate()">
-                                <table>
+                                <table style="width: 100%;">
                                     <tr>
                                         <td>
                                             <div class="form-group">
                                                 <label for="userid" class="control-label col-sm-3">Custom Id: </label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="codeid" name="code" value="<%=id%>" readonly="true" />
+                                                    <input type="text" style="width: 230px;" class="form-control" id="codeid" name="code" value="<%=id%>" readonly="true" />
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
 
                                             <div class="form-group">
-                                                <label for="fullname" class="control-label col-sm-3">First Name</label>
+                                                <label for="fullname" class="control-label col-sm-3">First Name:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="firstname" placeholder="Enter First Name" name="firstname" autofocus="true" required=""/>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <label for="lastname" class="control-label col-sm-3">Last Name</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" required=""/>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group">
-                                                <label for="dairyname" class="control-label col-sm-3">Dairy Name</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" required=""/>
+                                                    <input type="text" style="width: 230px;" class="form-control" id="firstname" placeholder="Enter First Name" name="firstname" autofocus="true" required=""/>
                                                 </div>
                                             </div>
                                         </td>
@@ -136,19 +125,17 @@
                                         <td>
 
                                             <div class="form-group">
-                                                <label for="mobilenumber" class="control-label col-sm-3">Mobile Number</label>
+                                                <label for="lastname" class="control-label col-sm-3">Last Name :</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="mobilenumber" placeholder="Enter Mobile Number" name="mobilenumber" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
+                                                    <input type="text" style="width: 230px;" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" required=""/>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-
-
                                             <div class="form-group">
-                                                <label for="accountnumber" class="control-label col-sm-3">Account Number</label>
+                                                <label for="dairyname" class="control-label col-sm-3">Dairy Name:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="accountnumber" placeholder="Enter Account Number" name="accountnumber" required=""/>
+                                                    <input type="text" style="width: 230px;" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" required=""/>
                                                 </div>
                                             </div>
                                         </td>
@@ -157,18 +144,39 @@
                                         <td>
 
                                             <div class="form-group">
-                                                <label for="accountbranch" class="control-label col-sm-3">Account Branch</label>
+                                                <label for="mobilenumber" class="control-label col-sm-3">Mobile Number :</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="acountbranch" placeholder="Enter Account Branch" name="acountbranch" required=""/>
+                                                    <input type="text" style="width: 230px;" class="form-control" id="mobilenumber" placeholder="Enter Mobile Number" name="mobilenumber" onkeypress="return numbersonly(event)" onkeyup="return limitlength(this, 10)" required=""/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+
+
+                                            <div class="form-group">
+                                                <label for="accountnumber" class="control-label col-sm-3">Account Number:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" style="width: 230px;" class="form-control" id="accountnumber" placeholder="Enter Account Number" name="accountnumber"/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <label for="accountbranch" class="control-label col-sm-3">Account Branch:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" style="width: 230px;" class="form-control" id="acountbranch" placeholder="Enter Account Branch" name="acountbranch"/>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
 
                                             <div class="form-group">
-                                                <label for="address" class="control-label col-sm-3">Address</label>
+                                                <label for="address" class="control-label col-sm-3">Address :</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address" required=""/>
+                                                    <input type="text" style="width: 230px;" class="form-control" id="address" placeholder="Enter Address" name="address" required=""/>
                                                 </div>
                                             </div>  
                                         </td>
@@ -176,9 +184,9 @@
                                     <tr>
                                         <td>
                                             <div class="form-group">
-                                                <label for="type"class="control-label col-sm-3">Select Type</label>
+                                                <label for="type"class="control-label col-sm-3">Select Type :</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="designation" placeholder="" name="type" required="">
+                                                    <select class="form-control" style="width: 230px;" id="designation" placeholder="" name="type" required="">
                                                         <option value="">--Please Select Type</option>                                                 
                                                         <option value="COW">COW</option>
                                                         <option value="BUFFALO">BUFFALO</option>
@@ -193,9 +201,9 @@
                                             <div class="form-group">
 
                                                 <div class="col-sm-offset-5 col-sm-10">
-                                                    <button type="submit" name="submit" value="Add" class="btn btn-default">Add</button>
-                                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
-                                                    <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
+                                                    <button type="submit" name="submit" value="Add" style="width: 5em;" class="btn btn-success">Add</button>
+                                                    <button  type="button" name="cancel" value="Cancel" style="width: 5em;" class="btn btn-danger col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
+                                                    <button type="button" name="cancel" style="width: 5em;" onclick="resetform()" value="Cancel" class="btn btn-primary col-sm-offset-1">Reset</button>
                                                 </div>
                                             </div>
                                         </td>

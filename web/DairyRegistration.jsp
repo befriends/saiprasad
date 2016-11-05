@@ -10,9 +10,12 @@
 <%!
     String message = "";
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd"
-    >
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
+<!DOCTYPE>
 <html> 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -27,6 +30,15 @@
         <script type="text/javascript" src="js/responsivemultimenu.js"></script>
 
         <script src="js/bootstrap.min.js"></script>
+        <style type="text/css">
+            input[type="text"] {
+            width: 230px;
+            }
+            label{
+                font-size: 14px;
+               
+            }
+        </style>
     </head>
     <script>
         function numbersonly(e) {
@@ -44,6 +56,7 @@
         function resetform() {
             document.getElementById("orderform").reset();
         }
+       
     </script>
     <!--<style type="text/css">	
     </style>-->
@@ -89,14 +102,14 @@
 
                     <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Dairy Registration Form</span>
 
-                    <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;">
+                    <div style="max-height: 600px;">
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="orderform" class="form-horizontal" action="MilkSupplierController" method="post"  onkeypress="myFunction()" onsubmit="return validate()">
-                                <table>
+                                <table style="width: 100%;">
                                     <tr>
                                         <td>
-                                            <div class="form-group">
+                                            <div class="form-group col-sm-12">
                                                 <label for="dairyid" class="control-label col-sm-3">Code: </label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="codeid" name="code" value="<%=id%>" readonly="true" />
@@ -105,7 +118,7 @@
                                         </td>
                                         <td>
 
-                                            <div class="form-group">
+                                            <div class="form-group col-lg-12">
                                                 <label for="dairyname" class="control-label col-sm-3">Dairy Name:</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="dairyname" placeholder="Enter Dairy Name" name="dairyname" autofocus="true" required=""/>
@@ -116,7 +129,7 @@
                                     <tr>
                                         <td>
 
-                                            <div class="form-group">
+                                            <div class="form-group col-lg-12">
                                                 <label for="personname" class="control-label col-sm-3">Person Name:</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="personname" name="personname" placeholder="Enter Person Name" required=""/>
@@ -124,7 +137,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="form-group">
+                                            <div class="form-group col-lg-12">
                                                 <label for="altername" class="control-label col-sm-3">Alternate Name:</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="altername" placeholder="Enter Alternate Name" name="altername" />
@@ -134,7 +147,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <div class="form-group">
+                                            <div class="form-group col-lg-14">
                                                 <label for="address" class="control-label col-sm-3">Address:</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address" required=""/>
@@ -201,10 +214,10 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="form-group">
-                                                <label for="type"class="control-label col-sm-3">Select Type</label>;
+                                            <div class="form-group col-lg-12">
+                                                <label for="type"class="control-label col-sm-3">Select Type:</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="designation" placeholder="" name="type" required="">
+                                                    <select class="form-control" id="designation" style="width: 230px;" placeholder="" name="type" required="">
                                                         <option value="">--Please Select Type</option>                                                 
                                                         <option value="COW">COW</option>
                                                         <option value="BUFFALO">BUFFALO</option>
@@ -219,9 +232,9 @@
                                             <div class="form-group">
 
                                                 <div class="col-sm-offset-5 col-sm-10">
-                                                    <button type="submit" name="submit" value="Add" class="btn btn-default">Add</button>
-                                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
-                                                    <button  type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
+                                                    <button type="submit" name="submit" value="Add" style="width: 5em;" class="btn btn-success">Add</button>
+                                                    <button type="button" name="cancel" style="width: 5em;" onclick="resetform()" value="Cancel" class="btn btn-primary col-sm-offset-1">Reset</button>
+                                                    <button  type="button" name="cancel" value="Cancel" style="width: 5em;" class="btn btn-danger col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
                                                 </div>
                                             </div>
                                         </td>

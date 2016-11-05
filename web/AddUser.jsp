@@ -6,13 +6,18 @@
 <%!
     String message = "";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
  
         <title>Add User</title>
-                <script type="text/javascript" lang="javascript">
+            <script type="text/javascript" lang="javascript">
             function submitUpdateForm(cnt) {
                 var f = "form" + cnt;
                 document.getElementById(f).action = "UpdateUser.jsp?act=2";

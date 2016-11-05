@@ -16,6 +16,11 @@
     double grandTotal = 0;
     String customerName = "",milkType="";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -55,7 +60,7 @@
             .lineheight{line-height: 0%;}
         </style>
         <% if (jarr.length() > 0) { %>
-        <%--<%@ include file="printHeader.jsp"%>--%>
+        <%@ include file="printHeader.jsp"%>
         <div style="font-size: 12px; font-weight: bold;text-align: center;">Purchase Customer Name Report</div>
         <div style="text-align: left;font-size: 10px;">Customer Name : <%=customerName%></div>
         <div style="text-align: left;font-size: 10px;">Milk Type : <%=milkType%></div>

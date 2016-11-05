@@ -17,12 +17,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%!
     String message = "";
-    
-     String DATE_FORMAT_NOW = "dd/MM/yyyy";
+
+    String DATE_FORMAT_NOW = "dd/MM/yyyy";
     Date date = new Date();
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
-    String stringDate = sdf.format(date );
+    String stringDate = sdf.format(date);
 
+%>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
 %>
 <!DOCTYPE html>
 <html>
@@ -33,18 +38,15 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery.js"></script>
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>  
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
         <script src="js/jquery-ui.js"></script>
-        <link rel="stylesheet" href="css/jquery-ui.css">
-        <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <link rel="stylesheet" href="css/jquery-ui.css">      
         <script src="js/bootstrap.min.js"></script>  
-        <script src="js/commonFunctions.js"></script>
-        <!--<script type="text/javascript" src="js/calendar.js"></script>-->
+        <script src="js/commonFunctions.js"></script>      
         <script type="text/javascript" lang="javascript" >
             function loadSubCategory(parentcomboId, setvaluecomboId) {
                 var parentComboId = parentcomboId;
-                var selectedId = $("#"+parentComboId).val();
+                var selectedId = $("#" + parentComboId).val();
                 var parentComboName = document.getElementById(parentComboId).name;
                 var url = 'dailyCollection';
                 var submodule = 'Purchase';
@@ -55,62 +57,27 @@
                     success: function(responseobj) {
                         var jsonObj = JSON.parse(responseobj).data;
                         var issuccess = JSON.parse(responseobj).isSuccess;
-                        if(issuccess){
+                        if (issuccess) {
                             $("#milktypeid").val(jsonObj[0].name);
                         }
-                        var selectedValue = $("#"+parentcomboId).val();
-                        $("#"+setvaluecomboId).val(selectedValue);
+                        var selectedValue = $("#" + parentcomboId).val();
+                        $("#" + setvaluecomboId).val(selectedValue);
                     }
                 });
             }
-//            function test(){alert('Ok');}
-//            function autoDate() {
-//                var tDay = new Date();
-//                var tMonth = tDay.getMonth() + 1;
-//                var tDate = tDay.getDate();
-//                if (tMonth < 10)
-//                    tMonth = "0" + tMonth;
-//                if (tDate < 10)
-//                    tDate = "0" + tDate;
-//                if(document.getElementById("datepicker").value="")
-//                {
-//                document.getElementById("datepicker").value = tDate + "/" + tMonth + "/" + tDay.getFullYear();
-//            }
-//        }
-//
-//            function addLoadEvent(func) {
-//                var oldonload = window.onload;
-//                if (typeof window.onload != 'function') {
-//                    window.onload = func;
-//                } else {
-//                    window.onload = function() {
-//                        if (oldonload) {
-//                            oldonload();
-//                        }
-//                        func();
-//                    }
-//                }
-//            }
-//
-//            addLoadEvent(function() {
-//                autoDate();
-//            });
-            
-            
-            $(document).ready(function (){
-                $("#datepicker").change(function (){
+            $(document).ready(function() {
+                $("#datepicker").change(function() {
                     stringDate = $("#datepicker").val();
                 });
             });
-           
-
 
             function resetform() {
                 document.getElementById("daillycollectionform").reset();
             }
-            
-             $(document).ready(function() {
+
+            $(document).ready(function() {
                 $("#fat").blur(function() {
+                    if($("#fat").val() >= 3.0 && $("#fat").val() <= 6.0){
                     var lacto = parseFloat($("#lacto").val());
                     var fat = parseFloat($("#fat").val());
 //                    var d = parseInt($("#discount").val());
@@ -121,6 +88,12 @@
                     var roundOff = Math.round(snf * 10) / 10;
                     $("#snf").val("");
                     $("#snf").val(roundOff);
+                }else
+                {
+                    alert("Please Enter Fat Above 3.0 and Below 6.0 ");
+                    $("#fat").val("");
+                    return false;
+                }
                 });
                 $("#lacto").blur(function() {
                     var lacto = parseFloat($("#lacto").val());
@@ -134,35 +107,77 @@
                     $("#snf").val("");
                     $("#snf").val(roundOff);
                 });
-                 $("#datepicker").datepicker({
-                dateFormat: 'dd/mm/yy',
-                 onSelect: function() {
-                    var selectedDate = $("#datepicker").val();
-                    $("#daillycollectionform")[0].action = "getDaillyCollection.jsp";
-                    window.location = "?selectedDate="+ selectedDate;
-                  }
+//                $("#fat").change(function() {
+//                    if($("#fat").val() === ""){
+//                        $("#fat").val("0");
+//                    }
+//                    $("#snf").change();
+//                });
+//                $("#lacto").change(function() {
+//                    if($("#lacto").val() === ""){
+//                        $("#lacto").val("0");
+//                    }
+//                    $("#snf").change();
+//                });
+                $("#datepicker").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    maxDate: new Date(),
+                    onSelect: function() {
+                        var selectedDate = $("#datepicker").val();
+                        $("#daillycollectionform")[0].action = "getDaillyCollection.jsp";
+                        window.location = "?selectedDate=" + selectedDate;
+                    }
+                });
+                // Datepicker code end
+                // date code begin
+                var tDay = new Date();
+                var tMonth = tDay.getMonth() + 1;
+                var tDate = tDay.getDate();
+                if (tMonth < 10)
+                    tMonth = "0" + tMonth;
+                if (tDate < 10)
+                    tDate = "0" + tDate;
+                if ($("#datepicker").val() === "") {
+                    $("#datepicker").val(tDate + "/" + tMonth + "/" + tDay.getFullYear());
+                }
+                // date code end
             });
-             // Datepicker code end
-            // date code begin
-            var tDay = new Date();
-            var tMonth = tDay.getMonth() + 1;
-            var tDate = tDay.getDate();
-            if (tMonth < 10)
-                tMonth = "0" + tMonth;
-            if (tDate < 10)
-                tDate = "0" + tDate;
-            if($("#datepicker").val() === ""){
-                $("#datepicker").val(tDate + "/" + tMonth + "/" + tDay.getFullYear());
+            function validateDailyCollection() {
+                var dailyCollectionGridTr = $('#tbl tbody tr');
+                var cnt;
+
+                if (dailyCollectionGridTr.length > 0) {
+                    for (cnt = 0; cnt < dailyCollectionGridTr.length; cnt++) {
+                        var rowShift = $('#tbl tbody tr[id=recordid'+cnt+'] td[id=shifttype]').text();
+                        var enteredShift = $("#designation").val();
+                        if (rowShift === enteredShift)
+                        {
+                            if(enteredShift==="M")
+                                alert("You have already added 'Morning' milk collection for this milkman.");
+                            else if(enteredShift==="E")
+                                alert("You have already added 'Evening' milk collection for this milkman.");
+                            
+                            return false;
+                        }
+                    }
+                }
             }
-            // date code end
-            });
+            
 
         </script>
-
+        <style type= text/css>
+             input[type="text"] {
+            width: 230px;
+            }
+            label{
+                font-size: 14px;
+               
+            }
+        </style>
     </head>
-                        <%!
-                            JSONObject jobj = null;
-                        %>
+    <%!    
+    JSONObject jobj = null;
+    %>
     <body  style="background-color:#555;">
         <jsp:include page="header.jsp"/>
         <div class="container">
@@ -180,50 +195,38 @@
                         %>      <span style="width: 100%;margin-left: auto;margin-right: auto;"><h3 style="color: red;"><%=message%></h3></span><br /><%
                                 }
                             }   /// End
-
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("submodule", "menuitem"); // Database Table Name
-//                            params.put("columnname", "menuitemid"); // Database Column Name
-//                            CommonDao commonDaoObj = new CommonDaoImpl();
-//                            String id = commonDaoObj.generateNextID(params);
-
-                            PurchaseSellDao purchaseDaoObj = new PurchaseSellDaoImpl();                            
+                            PurchaseSellDao purchaseDaoObj = new PurchaseSellDaoImpl();
 
                             JSONObject JsonList = purchaseDaoObj.getMilkmandetailsList();
-                            
-                            
-                        String selectedDate = "";
-                        if (request.getParameter("selectedDate") == null) {
-                            selectedDate = stringDate;
-                        } else {
-                            selectedDate = request.getParameter("selectedDate");
-                        }
+                            String selectedDate = "";
+                            if (request.getParameter("selectedDate") == null) {
+                                selectedDate = stringDate;
+                            } else {
+                                selectedDate = request.getParameter("selectedDate");
+                            }
                         %>
-
-
-
                     <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;">Daily Collection</span>
 
-                    <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;">
+                    <div style="max-height: 600px; ">
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="daillycollectionform" class="form-horizontal" action="dailyCollection" method="post">
-                                <table>
+                                <table style="width: 100%;">
                                     <tr>
                                         <td>
                                             <div class="form-inline">
                                                 <label for="date" class="control-label col-sm-3">Date: </label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="date-picker" id="datepicker" value="<%=selectedDate %>" placeholder="Enter Date" name="date" value="" required=""/>
+                                                    <input type="text" class="date-picker" style="width:230px;" id="datepicker" value="<%=selectedDate%>" placeholder="Enter Date" name="date" value="" required=""/>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="form-inline">
+                                            <div class="form-inline col-sm-13">
                                                 <label for="customid" class="control-label col-sm-3">MilkMan Id:</label> 
                                                 <div class="col-sm-8">
                                                     <!--<input type="text" class="form-control" id="customid" name="milkid" required=""/>-->
-                                                    <select class="form-contol" id="milkmanid" placeholder="" name="milkmanid" onchange="loadSubCategory('milkmanid', 'milkmanname')" required="">
+                                                    <select class="form-contol" id="milkmanid" placeholder="" style="width:230px;" name="milkmanid" onchange="loadSubCategory('milkmanid', 'milkmanname')" required="">
                                                         <option value="">--Please Select ID--</option>
                                                         <%  JSONArray jarr = JsonList.getJSONArray("data");
                                                             for (int cnt = 0; cnt < jarr.length(); cnt++) {
@@ -245,7 +248,7 @@
                                             <div class="form-inline">
                                                 <label for="milkmanname"class="control-label col-sm-3">Name :</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="milkmanname" placeholder="" name="milkmanname" onchange="loadSubCategory('milkmanname', 'milkmanid')" required="">
+                                                    <select class="form-control" id="milkmanname" placeholder="" name="milkmanname" onchange="loadSubCategory('milkmanname', 'milkmanid')" required="" style="width:230px;">
                                                         <option value="">--Please Select Name--</option>
                                                         <%  //JSONArray jarr = JsonList.getJSONArray("data");
                                                             for (int cnt = 0; cnt < jarr.length(); cnt++) {
@@ -263,12 +266,10 @@
                                             </div>
                                         </td>
                                         <td>
-
-
                                             <div class="form-inline">
-                                                <label for="milktype"class="control-label col-sm-3">Milk Type :</label>
+                                                <label for="milktype"class="control-label col-sm-3">Milk Type:</label>
                                                 <div class="col-sm-8">                                                                                                       
-                                                    <input type="text" id="milktypeid" placeholder="Milk Type" name="milktype" value="" readonly="true" required=""/>                                                        
+                                                    <input type="text" id="milktypeid" placeholder="Milk Type" style="width:230px;" name="milktype" value="" readonly="true" required=""/>                                                        
                                                 </div>
                                             </div>
                                         </td>
@@ -278,7 +279,7 @@
                                             <div class="form-inline" >
                                                 <label for="liter" class="control-label col-sm-3">Liter:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="liter" placeholder="Enter Liter " name="liter" required=""/>
+                                                    <input type="text" class="form-control" id="liter" placeholder="Enter Liter " name="liter" value="" required=""/>
                                                 </div>
                                             </div>
                                         </td>
@@ -286,35 +287,35 @@
                                             <div class="form-inline" >
                                                 <label for="fat" class="control-label col-sm-3">Lactose:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="lacto" placeholder="Enter Lacto" name="lactose" />
+                                                    <input type="text" class="form-control" id="lacto" placeholder="Enter Lacto" name="lactose" value="" required=""/>
                                                 </div>
                                             </div>
                                         </td>
-                                        </tr>
-                                        <td>
-                                            <div class="form-inline" >
-                                                <label for="fat" class="control-label col-sm-3">Fat:</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="fat" placeholder="Enter Fat" name="fat"  required=""/>
-                                                </div>
+                                    </tr>
+                                    <td>
+                                        <div class="form-inline" >
+                                            <label for="fat" class="control-label col-sm-3">Fat:</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="fat" placeholder="Enter Fat" name="fat" value="" required=""/>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-inline" >
-                                                <label for="fat" class="control-label col-sm-3">SNF:</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="snf" placeholder="Enter SNF" name="snf" value="" required="" readonly="true"/>
-                                                </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-inline" >
+                                            <label for="fat" class="control-label col-sm-3">SNF:</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="snf" placeholder="Enter SNF" name="snf" value="" required="" readonly="true"/>
                                             </div>
-                                        </td>
+                                        </div>
+                                    </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <div class="form-inline">
                                                 <label for="type"class="control-label col-sm-3">Select Shift :</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="designation" placeholder="" name="shift" required="">
-                                                        <option value="">--Please Select Designation--</option>
+                                                    <select class="form-control" id="designation" placeholder="" name="shift" required="" style="width:230px;">
+                                                        <!--<option value="">--Please Select Designation--</option>-->
                                                         <option value="M">Morning</option>
                                                         <option value="E">Evening</option>
 
@@ -322,12 +323,12 @@
                                                 </div>
                                             </div>
                                         </td>
-                                    
+
                                         <td>
                                             <div class="form-inline" >
                                                 <label for="fat" class="control-label col-sm-3">Remark:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="remark" placeholder="Enter Lacto" name="remark" required=""/>
+                                                    <input type="text" class="form-control" id="remark" placeholder="Enter Lacto" name="remark"/>
                                                 </div>
                                             </div>
                                         </td>
@@ -336,9 +337,9 @@
                                         <td>
                                             <div class="form-group"> 
                                                 <div class="col-sm-offset-5 col-sm-10">
-                                                    <button type="submit" name="submit" value="Add" class="btn btn-default">Add </button>
-                                                    <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
-                                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
+                                                    <button type="submit" name="submit" value="Add" style="width: 5em;" onclick="validateDailyCollection()" class="btn btn-success">Add </button>
+                                                    <button type="button" name="cancel" value="Cancel" style="width: 5em;" class="btn btn-danger col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
+                                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" style="width: 5em;" class="btn btn-primary col-sm-offset-1">Reset</button>
                                                 </div>
                                             </div>
                                         <td>
@@ -348,14 +349,13 @@
                                 </table>
                             </form>
                         </fieldset>
-                         <%                            
+                        <%
                             JSONObject milkCollectionList = purchaseDaoObj.getMilkManRecordList(selectedDate);
                             JSONArray itemarr = milkCollectionList.getJSONArray("data");
                             if (milkCollectionList != null && milkCollectionList.has("success") && milkCollectionList.has("data")) {
                                 itemarr = milkCollectionList.getJSONArray("data");
                             }
                         %>
-
                         <table class="table table-condensed table-bordered table-hover"style="table-layout:fixed;" id="tbl" >
                             <thead>
                                 <tr class="">
@@ -372,7 +372,6 @@
                                     <th style="width: 20%;">Action</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 <%
                                     int cnt = 0;
@@ -423,7 +422,7 @@
                                 <td><label><%=cnt + 1%></label></td>
                                 <td><label name="code"><%=obj.get("code")%></label></td>
                                 <td><label name="type"><%=obj.get("type")%></label></td>
-                                <td><label name="shift"><%=obj.get("shift")%></label></td>
+                                <td id="shifttype"><label name="shift"><%=obj.get("shift")%></label></td>
                                 <td><label name="fat"><%=obj.get("fat")%></label></td>
                                 <td><label name="lacto"><%=obj.get("lacto")%></label></td>
                                 <td><label name="totalmilk"><%=obj.get("totalmilk")%></label></td>
@@ -451,5 +450,5 @@
 
         <script type="text/javascript" src="js/GridViewUserController.js"></script>   
 
-                        </body>
-                        </html>
+    </body>
+</html>

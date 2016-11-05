@@ -18,6 +18,11 @@
 <%!
     String message = "";
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,9 +32,9 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery.js"></script>
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>     
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
         <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <script src="js/bootstrap.min.js"></script>  
         <script src="js/commonFunction.js"></script>
         <script type="text/javascript" src="js/calendar.js"></script>
@@ -101,7 +106,7 @@
 
                             HashMap<String, String> params = new HashMap<String, String>();
                             params.put("submodule", "foodsell"); // Database Table Name
-                            params.put("columnname", "foodsellid"); // Database Column Name
+                            params.put("columnname", "code"); // Database Column Name
                             CommonDao commonDaoObj = new CommonDaoImpl();
                             String id = commonDaoObj.generateNextID(params);
 
@@ -250,7 +255,7 @@
                                     <div class="form-group"> 
                                         <div class="col-sm-offset-2 col-sm-10">
                                             <button type="submit" name="submit" value="Add" class="btn btn-default">Add </button>
-                                            <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
+                                            <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
                                             <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
                                         </div>
                                     </div>

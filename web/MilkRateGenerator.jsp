@@ -6,16 +6,21 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>RateGenerator</title>
+        <title>Rate Generator</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery.js"></script>
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>     
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
         <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <script src="js/bootstrap.min.js"></script>
          <script src="js/jquery-ui.js"></script>
         <link rel="stylesheet" href="css/jquery-ui.css">
@@ -26,10 +31,26 @@
             }
             $(document).ready(function (){
                 
+                 $("#datepicker").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    maxDate: new Date()
+                });
             
-             $("#datepicker").datepicker({
-                dateFormat: 'dd/mm/yy'
-            });
+                $("#fromrate").on("blur", function(){
+                    $("#rate").val($("#fromrate").val());
+                });
+                 $("#fromfat").blur(function() {
+                 if($("#fromfat").val() >= 3.0 && $("#fromfat").val() <= 6.0){
+                     
+                 }else
+                 {
+                     alert("Please Enter Fat Above 3.0 and Below 6.0 ");
+                     $("#fromfat").val("");
+                     return false;
+                 }
+                         
+             });
+             
             });
             
         </script>  
@@ -67,7 +88,7 @@
                 <div style="margin-left: auto; margin-right: auto; width: 100%; background-color:buttonshadow;">
                     <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Rate Generator</span>
 
-                    <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;">
+                    <div style="max-height: 600px; >
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="rategeneratorid" class="form-horizontal" action="RateGeneretorController" method="post">
@@ -194,7 +215,7 @@
 <!--                                            <div class="form-group col-sm-14">
                                                 <label for="fromfat" class="control-label col-sm-5">From </label>                            -->
                                                 <div class="col-sm-9">
-                                                    <input type="text" class="form-control" id="fromrate" placeholder="Enter Rate" name="fromrate" value=""/>
+                                                    <input type="text" class="form-control" id="fromrate" placeholder="Enter Rate" name="fromrate" value="" required=""/>
                                                 </div>
 
                                             <!--</div>-->
@@ -220,7 +241,7 @@
                                     </tr>
                                 </table>
 
-                                <table width="">
+<!--                                <table width="">
                                     <tr>
                                         <td></td>
                                         <td></td>
@@ -280,7 +301,7 @@
 
                                         <td>
 
-                                            <!--<center> <div class="vertical-line"></div></center>-->
+                                            <center> <div class="vertical-line"></div></center>
 
                                             <div class="form-group col-sm-14" >
                                                 <label for="rate" class="control-label col-sm-5">Basic</label>
@@ -329,7 +350,7 @@
 
 
                                         <td> 
-                                            <!--<center> <div class="vertical-line" ></div></center>-->
+                                            <center> <div class="vertical-line" ></div></center>
                                             <div class="form-group col-sm-14">
                                                 <label for="fromfat" class="control-label col-sm-5">Increase </label>                            
                                                 <div class="col-sm-9">
@@ -345,19 +366,98 @@
 
 
 
-                                </table>
+                                </table>-->
+<hr style="border-top: 2px solid tomato;"/>
+<div style="text-align:center;">
+<table style="width:70%;" align="center">
+<tr>
+<td style="border:none;width:18%;">&nbsp;</td>
+<td style="width:6%;">&nbsp;</td>
+<td colspan="4" style="border: none;width:30%;">
+    <!--<div class="form-group col-sm-14">-->
+        <!--<label for="fromfat" class="control-label col-sm-5">Decrease </label>-->                            
+        <!--<div class="col-sm-12">-->
+            <input type="text" class="form-control" id="dfat" placeholder="Decrease Rate for FAT" style="text-align: center;" name="decreaseratefat" value=""/>
+        <!--</div>-->
+    <!--</div>-->
+</td>
+<td style="width:6%;">&nbsp;</td>
+<td style="width:18%;">&nbsp;</td>
+</tr>
 
-                                <div class="form-group"> 
+<tr>
+<td style="width:18%;">&nbsp;</td>
+<td style="width:6%;">&nbsp;</td>
+<td style="width:3.5%;height:50px;">&nbsp;</td>
+<td style="width:3%;height:50px;">&nbsp;</td>
+<td colspan="2" style="border-left: 1px solid;width:15%;height:50px;text-align: left;">(<font style="color:red;font-size: 14px;font-weight: bolder;">-</font>) FAT Rate</td>
+<td style="width:6%;">&nbsp;</td>
+<td style="width:18%;">&nbsp;</td>
+</tr>
 
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" name="submit" value="Add" class="btn btn-default">Generate </button>
-                                        <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
-                                        <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
+<tr>
+<td rowspan="2" style="border: none;width:18%;">
+     <input type="text" class="form-control" id="asnf" placeholder="Decrease Rate for SNF" name="decreaseratesnf" />
+</td>
+<td colspan="2" style="border-bottom: 1px solid;width:10%;vertical-align: bottom;">(<font style="color:red;font-size: 14px;font-weight: bolder;">-</font>) SNF Rate</td>
+<td colspan="2" rowspan="2" style="border: none;width:30%;">
+    <center>
+    <!--<div class="form-group col-sm-14" >-->
+        <!--<label for="rate" class="control-label col-sm-5">Basic</label>-->
+        <!--<div class="col-sm-12">-->
+        <input type="text" class="form-control" id="rate" placeholder="Basic Rate" style="text-align: center;height:100px;width:100px;border-radius:15em;" name="rate" required="" readonly="true"/>
+        <!--</div>-->
+    <!--</div>-->
+    </center>
+</td>
+<!--<td colspan="2" style="border-bottom: 1px solid;width:10%;vertical-align: bottom;">(<font style="color:green;font-size: 14px;font-weight: bolder;">+</font>) SNF Rate</td>-->
+<td style="width:6%;">&nbsp;</td>
+<td style="width:3.5%;">&nbsp;</td>
+<td rowspan="2" style="border: none;width:18%;">
+    <input type="text" class="form-control" id="asnf" placeholder="Increase Rate for SNF" name="increaseratesnf" />
+</td>
+</tr>
+
+<tr>
+<td style="width:6%;">&nbsp;</td>
+<td style="width:3.5%;">&nbsp;</td>
+<td colspan="2" style="border-top: 1px solid;width:10%;vertical-align: top;">(<font style="color:green;font-size: 14px;font-weight: bolder;">+</font>) SNF Rate</td>
+<!--<td style="width:3.5%;">&nbsp;</td>-->
+<!--<td style="width:6%;">&nbsp;</td>-->
+</tr>
+
+<tr>
+<td style="width:18%;">&nbsp;</td>
+<td style="width:6%;">&nbsp;</td>
+<td colspan="2" style="width:15%;height:50px;">(<font style="color:green;font-size: 14px;font-weight: bolder;">+</font>) FAT Rate</td>
+<td style="border-left: 1px solid;width:3%;height:50px;">&nbsp;</td>
+<td style="width:3%;height:50px;">&nbsp;</td>
+<td style="width:6%;">&nbsp;</td>
+<td style="width:18%;">&nbsp;</td>
+</tr>
+
+<tr>
+<td style="width:18%;">&nbsp;</td>
+<td style="width:6%;">&nbsp;</td>
+<td colspan="4" style="border: none;width:30%;">
+    <input type="text" class="form-control" id="asnf" placeholder="Increase Rate for FAT" style="text-align: center;" name="increaseratefat" />
+</td>
+<td style="width:6%;">&nbsp;</td>
+<td style="width:18%;">&nbsp;</td>
+</tr>
+
+</table>
+</div>
+<hr style="border-top: 2px solid tomato;"/>
+                                <div class="form-group" style="text-align: center;"> 
+
+                                    <div class="col-sm-12">
+                                        <button type="submit" name="submit" value="Add" class="btn btn-success">Generate </button>
+                                        <button type="button" name="cancel" value="Cancel" class="btn btn-danger col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
+                                        <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-primary col-sm-offset-1">Reset</button>
                                     </div>
                                 </div>
-
-
-
+<hr style="border-top: 2px solid tomato;"/>
                                 <input type="hidden" name="act" value="1" />
                                 <input type="hidden" name="submodule" value="AddRate" />
 
@@ -366,5 +466,6 @@
                     </div>
                 </div>
             </div>
+    </div>
     </body>
 </html>

@@ -2,7 +2,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" session="true"%>
 
 
-
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,10 +16,11 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <!--style for menu-->
         <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
 
         <script type="text/javascript" src="js/jquery.js"></script> 
         <!--script for menu-->
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <script src="js/bootstrap.min.js"></script>
         <title>Home Page</title>
     </head>

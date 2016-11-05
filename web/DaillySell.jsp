@@ -28,6 +28,11 @@
     String stringDate = sdf.format(date );
 
 %>
+<%
+if(session.getAttribute("UserName") == null){
+    response.sendRedirect("Login.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,10 +46,10 @@
         <script src="js/jquery-ui.js"></script>
         <link rel="stylesheet" href="css/jquery-ui.css">
         <!--style for menu-->
-        <link rel="stylesheet" href="css/responsivemultimenu.css" type="text/css"/>     
+        <link href="css/menubarcustomcss.css" rel="stylesheet" type="text/css" />
         <!--script for menu-->
          <script src="js/commonFunctions.js"></script>
-        <script type="text/javascript" src="js/responsivemultimenu.js"></script>
+        <!--<script type="text/javascript" src="js/responsivemultimenu.js"></script>-->
         <script src="js/bootstrap.min.js"></script>      
         <script type="text/javascript" lang="javascript" >
         function loadSubCategory(parentcomboId, setvaluecomboId) {
@@ -71,6 +76,7 @@
 
         $(document).ready(function() {
             $("#fat").blur(function() {
+                 if($("#fat").val() >= 3.0 && $("#fat").val() <= 6.0){
                 var lacto = parseFloat($("#lacto").val());
                 var fat = parseFloat($("#fat").val());
 //                    var d = parseInt($("#discount").val());
@@ -81,6 +87,12 @@
                 var roundOff = Math.round(snf * 10) / 10;
                 $("#snf").val("");
                 $("#snf").val(roundOff);
+                 }else
+                 {
+                     alert("Please Enter Fat Above 3.0 and Below 6.0 ");
+                     $("#fat").val("");
+                     return false;
+                 }
             });
             $("#lacto").blur(function() {
                 var lacto = parseFloat($("#lacto").val());
@@ -97,6 +109,7 @@
             // Datepicker code begin
             $("#datepicker").datepicker({
                 dateFormat: 'dd/mm/yy',
+                maxDate: new Date(),
                 onSelect: function() {
                     var selectedDate = $("#datepicker").val();
                     $("#daillysaleform")[0].action = "DaillySell.jsp";
@@ -146,11 +159,6 @@
                             }
                         }   /// End
 
-//                            HashMap<String, String> params = new HashMap<String, String>();
-//                            params.put("submodule", "sellentry"); // Database Table Name
-//                            params.put("columnname", "sellid"); // Database Column Name
-//                            CommonDao commonDaoObj = new CommonDaoImpl();
-//                            String id = commonDaoObj.generateNextID(params);
                         SellDao sellDaoObj = new SellDaoImpl();
 
                         JSONObject JsonList = sellDaoObj.getDairyNameList();
@@ -164,17 +172,19 @@
 
                     <span class="label label-info center-block" style="height:30px;font-size:20px;font-weight:bolder;vertical-align:middle;"> Daily Sell Form</span>
 
-                    <div style="max-height: 600px; overflow-y: scroll;overflow-x: hidden;">
+                    <div style="max-height: 600px;">
                         <fieldset style="border:1px solid silver; padding:5px;">               
 
                             <form role="form" id="daillysaleform" class="form-horizontal" action="SellController" method="post">
-                                <table>
+                                
+
+                                <table style="width: 100%">
                                     <tr>
                                         <td>
                                             <div class="form-inline">
                                                 <label for="datepicker" class="control-label col-sm-3">Date: </label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="date-picker" id="datepicker" name="date" value="<%=selectedDate %>" required="" />
+                                                    <input type="text" class="date-picker" id="datepicker" style="width: 230px;" name="date" value="<%=selectedDate %>" required="" />
                                                 </div>
                                             </div>
                                         </td>
@@ -183,7 +193,7 @@
                                                 <label for="dairyid" class="control-label col-sm-3">MilkMan Id:</label> 
                                                 <div class="col-sm-8">
                                                     <!--<input type="text" class="form-control" id="customid" name="milkid" required=""/>-->
-                                                    <select class="form-contol" id="dairyid" placeholder="" name="dairyid" onchange="loadSubCategory('dairyid', 'dairyname')" required="">
+                                                    <select class="form-contol" style="width:230px;" id="dairyid" placeholder="" name="dairyid" onchange="loadSubCategory('dairyid', 'dairyname')" required="">
                                                         <option value="">--Please Select ID--</option>
                                                         <%  JSONArray jarr = JsonList.getJSONArray("data");
                                                             for (int cnt = 0; cnt < jarr.length(); cnt++) {
@@ -202,9 +212,9 @@
                                     <tr>
                                         <td>
                                             <div class="form-inline">
-                                                <label for="cusname"class="control-label col-sm-3">Dairy Name :</label>
+                                                <label for="cusname"class="control-label col-sm-3">Dairy Name:</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="dairyname" placeholder="" name="dairyname"   onchange="loadSubCategory('dairyname', 'dairyid')"required="">
+                                                    <select class="form-control" id="dairyname" style="width: 230px;" placeholder="" name="dairyname"   onchange="loadSubCategory('dairyname', 'dairyid')"required="">
                                                         <option value="">--Please Select Name--</option>
                                                         <% //                    JSONArray jarr = JsonList.getJSONArray("data");
                                                             for (int cnt = 0; cnt < jarr.length(); cnt++) {
@@ -222,15 +232,7 @@
                                             <div class="form-inline">
                                                 <label for="milktype"class="control-label col-sm-3">Milk Type :</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" id="milktypeid" placeholder="Milk Type" name="milktype" value="" readonly="true" required=""/>
-<!--                                                    <select class="form-control" id="milktype" placeholder="" name="milktype" required="">
-                                                        <option value="">--Please Select Designation--</option>
-                                                        <option value="BOTH">BOTH</option>
-                                                        <option value="COW">COW</option>
-                                                        <option value="BUFFALO">BUFFALO</option>
-
-                                                    </select>-->
-
+                                                    <input type="text" id="milktypeid" placeholder="Milk Type" style="width: 230px;" name="milktype" value="" readonly="true" required=""/>
                                                 </div>
                                             </div>
                                         </td>
@@ -294,7 +296,7 @@
                                             <div class="form-inline" >
                                                 <label for="fat" class="control-label col-sm-3">Protein:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="protien" placeholder="Enter Protien" name="protein" required=""/>
+                                                    <input type="text" class="form-control" id="protien" placeholder="Enter Protien" name="protein" />
                                                 </div>
                                             </div>
                                         </td>
@@ -303,8 +305,8 @@
                                             <div class="form-inline">
                                                 <label for="type"class="control-label col-sm-3">Select Shift :</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="designation" placeholder="" name="shift" required="">
-                                                        <option value="">--Please Select Designation--</option>
+                                                    <select class="form-control" id="designation" style="width: 230px;" placeholder="" name="shift" required="">
+                                                        <!--<option value="">--Please Select Designation--</option>-->
                                                         <option value="M">Morning</option>
                                                         <option value="E">Evening</option>
 
@@ -318,7 +320,7 @@
                                             <div class="form-inline" >
                                                 <label for="fat" class="control-label col-sm-3">Remark:</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control" id="remark" placeholder="Enter Lacto" name="remark" required=""/>
+                                                    <input type="text" class="form-control" id="remark" placeholder="Enter Lacto" name="remark"/>
                                                 </div>
                                             </div>
 
@@ -330,9 +332,9 @@
                                             <div class="form-group"> 
 
                                                 <div class="col-sm-offset-5 col-sm-10">
-                                                    <button type="submit" name="submit" id="submit" value="Add" class="btn btn-default">Add </button>
-                                                    <button type="button" name="cancel" value="Cancel" class="btn btn-default col-sm-offset-1" onClick="window.location = 'home.jsp'">Cancel</button>
-                                                    <button type="button" name="cancel" onclick="resetform()" value="Cancel" class="btn btn-default col-sm-offset-1">Reset</button>
+                                                    <button type="submit" name="submit" id="submit" value="Add" style="width: 5em;" class="btn btn-success">Add </button>
+                                                    <button type="button" name="cancel" value="Cancel" style="width: 5em;" class="btn btn-danger col-sm-offset-1" onClick="window.location = 'Home.jsp'">Cancel</button>
+                                                    <button type="button" name="cancel" style="width: 5em;" onclick="resetform()" value="Cancel" class="btn btn-primary col-sm-offset-1">Reset</button>
                                                 </div>
                                             </div>
                                         </td>
@@ -428,9 +430,6 @@
                 </div>
             </div>
         </div>
-
-
-        <script type="text/javascript" src="js/GridViewUserController.js"></script>   
-        
+        <script type="text/javascript" src="js/GridViewUserController.js"></script>         
     </body>
 </html>
