@@ -82,7 +82,7 @@ public class PurchaseSellDaoImpl implements PurchaseSellDao {
 
 //            PreparedStatement pst = null;
           st = conn.createStatement();
-            ResultSet rs1 = st.executeQuery("select rategeneratorid,brate,bfat,bsnf,dperfat,aperfat,dpersnf,apersnf from rategenerator where activeflag=1 and iscow=" + iscow + " and isbuffalo=" + isbuffelo);
+            ResultSet rs1 = st.executeQuery("select rategeneratorid,brate,bfat,bsnf,dperfat,aperfat,dpersnf,apersnf from rategenerator where activeflag=1 and iscow=" + iscow + " and isbuffalo=" + isbuffelo + " and purchase= 1");
 
             while (rs1.next()) {
                 rategeneratorid = rs1.getString(1);
@@ -219,8 +219,6 @@ public class PurchaseSellDaoImpl implements PurchaseSellDao {
             Statement st = conn.createStatement();
 
             rs = st.executeQuery("select milkmanid,code,type,fullname from milkmandetails where isdeleted=0 order by fullname");
-//            rs = st.executeQuery("select p.id,m.code,m.type,m.fullname from purchase_entry p,milkmandetails m where p.id=m.id ");
-            //String query = "Select p.purchaseid,p.id,m.code,m.type from purchase_entry p,milkmandetails m where p.id=m.id ";
 
             if (null != rs) {
 
@@ -331,16 +329,16 @@ public class PurchaseSellDaoImpl implements PurchaseSellDao {
 
         try {
 
-            returnJSONObject.put("success", "false");
+//            returnJSONObject.put("success", "false");
 
             conn = DBPool.getConnection();
 
             Statement st = conn.createStatement();
             String query = "";
             if (selectedDate.equals("")) {
-                query = "Select d.purchaseid,d.fat,d.lacto,d.rate,d.totalmilk,d.totalamount,d.date,d.type,d.milkmanid,m.code from daillycollection d,milkmandetails m where d.milkmanid=m.milkmanid ";
+                query = "Select d.purchaseid,d.fat,d.snf,d.lacto,d.rate,d.totalmilk,d.totalamount,d.date,d.type,d.milkmanid,m.code from daillycollection d,milkmandetails m where d.milkmanid=m.milkmanid ";
             } else {
-                query = "Select d.purchaseid,d.fat,d.snf,d.lacto,d.rate,d.totalmilk,d.totalamount,d.date,d.type,d.milkmanid,m.code from daillycollection d,milkmandetails m where d.date BETWEEN '" + startDate + "' AND '" + selectedDate + "' and d.milkmanid='" + milkManId + "' and d.milkmanid=m.milkmanid";
+                query = "Select d.purchaseid,d.fat,d.snf,d.lacto,d.rate,d.totalmilk,d.totalamount,d.date,d.type,d.milkmanid,m.code,m.fullname from daillycollection d,milkmandetails m where d.date BETWEEN '" + startDate + "' AND '" + selectedDate + "' and d.milkmanid='" + milkManId + "' and d.milkmanid=m.milkmanid";
             }
             rs = st.executeQuery(query);
 
@@ -359,6 +357,7 @@ public class PurchaseSellDaoImpl implements PurchaseSellDao {
                     jobj.put("type", null != rs.getString(9) ? rs.getString(9) : "");
                     jobj.put("milkmanid", null != rs.getString(10) ? rs.getString(10) : "");
                     jobj.put("code", null != rs.getString(11) ? rs.getString(11) : "");
+                    jobj.put("fullname", null != rs.getString(12) ? rs.getString(12) : "");
 
                     jarr.put(jobj);
                 }
@@ -431,36 +430,39 @@ public class PurchaseSellDaoImpl implements PurchaseSellDao {
         try {
 
             conn = DBPool.getConnection();
-
             Statement st = conn.createStatement();
-
+            long startdate = 0;
             String milkmanID = StringUtils.isNullOrEmpty(milkmanid) ? "" : milkmanid;
-
-            String query = "Select billgenerateddate from milkmanbillmapping where milkmanid='" + milkmanID + "'";
+            String query = "Select max(billgenerateddate) from milkmanbilldetails where milkmanid='" + milkmanID + "'";
 
             rs = st.executeQuery(query);
 
             if (null != rs) {
 
-                while (rs.next()) {
-                    JSONObject jobj = new JSONObject();
-                    jobj.put("billgenerateddate", rs.getLong(1));
-
-                    long Value = rs.getLong(1);
-                    Date date = new Date(Value);
-                    SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
-                    String dateText = df2.format(date);
-
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(df2.parse(dateText));
-                    c.add(Calendar.DATE, 1);
-                    dateText = df2.format(c.getTime());
-
-                    jarr.put(dateText);
-
+                if (rs.next()) {
+                    startdate = rs.getLong(1);
+                    if(startdate == 0){ //no any record found (in case of first bill)
+                        query = "Select registrationdate from milkmandetails where milkmanid='" + milkmanID + "'";
+                        rs = st.executeQuery(query);
+                        if (null != rs) {
+                            if(rs.next()){
+                                startdate = rs.getLong(1);
+                            }
+                        }
+                    }
                 }
-            }
 
+                Date date = new Date(startdate);
+                SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+                String dateText = df2.format(date);
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(df2.parse(dateText));
+                c.add(Calendar.DATE, 1);
+                dateText = df2.format(c.getTime());
+
+                jarr.put(dateText);
+            }
             returnJSONObject.put("data", jarr);
             returnJSONObject.put("isSuccess", true);
 

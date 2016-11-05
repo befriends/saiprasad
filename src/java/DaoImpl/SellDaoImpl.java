@@ -14,11 +14,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.internal.compiler.lookup.TypeIds;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,7 +111,8 @@ public class SellDaoImpl implements SellDao {
 
         JSONObject resultJSONObject = new JSONObject();
         String date = "", code = "",dairyId="", dairyName = "", milkType = "", driverName = "", liter = "", fat = "", lactose = "", shift = "", remark = "", tankerNumber = "", dairyid = "", type = "", SNF = "", protein = "", totalMilk = "";
-         double fatDiff = 0, snfDiff = 0, incrementPerFat = 0, incrementPerSNF = 0, decrementPerFat = 0, decreamentPerSNF = 0, fatAmount = 0, snfAmount = 0, enterFat = 0, enterSNF = 0, basicFat = 0, basicSNF = 0, bRate = 0, totalamount = 0, decrementAmount = 0,enterLactose=0;
+         double fatDiff = 0, snfDiff = 0, incrementPerFat = 0, incrementPerSNF = 0, decrementPerFat = 0, decreamentPerSNF = 0, enterProtein=0;
+          double fatAmount = 0, snfAmount = 0, enterFat = 0, enterSNF = 0, basicFat = 0, basicSNF = 0, bRate = 0, totalamount = 0, decrementAmount = 0,enterLactose=0;
          String rategeneratorid = "";
         DecimalFormat form = new DecimalFormat("#.##");
         ResultSet rs = null;
@@ -131,7 +136,10 @@ public class SellDaoImpl implements SellDao {
             fat = StringUtils.isNotEmpty(params.get("fat")) ? params.get("fat") : "";
             lactose = StringUtils.isNotEmpty(params.get("lactose")) ? params.get("lactose") : "";
             SNF = StringUtils.isNotEmpty(params.get("snf")) ? params.get("snf") : "";
-            protein = StringUtils.isNotEmpty(params.get("protein")) ? params.get("protein") : "";
+//            protein = StringUtils.isNotEmpty(params.get("protein")) ? params.get("protein") : "";
+            if (StringUtils.isNotEmpty(params.get("protein"))) {
+                enterProtein = Double.parseDouble(params.get("protein"));
+            }
             shift = StringUtils.isNotEmpty(params.get("shift")) ? params.get("shift") : "";
             remark = StringUtils.isNotEmpty(params.get("remark")) ? params.get("remark") : "";
             
@@ -157,7 +165,7 @@ public class SellDaoImpl implements SellDao {
 
             PreparedStatement pst = null;
              st = conn.createStatement();
-            ResultSet rs1 = st.executeQuery("select rategeneratorid,brate,bfat,bsnf,dperfat,aperfat,dpersnf,apersnf from rategenerator where activeflag=1 and iscow=" + iscow + " and isbuffalo=" + isbuffelo);
+            ResultSet rs1 = st.executeQuery("select rategeneratorid,brate,bfat,bsnf,dperfat,aperfat,dpersnf,apersnf from rategenerator where activeflag=1 and iscow=" + iscow + " and isbuffalo=" + isbuffelo +" and sell= 1");
 
             while (rs1.next()) {
                 rategeneratorid = rs1.getString(1);
@@ -171,6 +179,7 @@ public class SellDaoImpl implements SellDao {
                 enterFat = Double.parseDouble(fat);
                 enterSNF = Double.parseDouble(SNF);
                 enterLactose = Double.parseDouble(lactose);
+//                enterProtein = Double.parseDouble(protein);
             }
 
             if (enterFat >= basicFat) {
@@ -201,11 +210,11 @@ public class SellDaoImpl implements SellDao {
                 pst.setString(2, dairyId);
                 pst.setString(3, driverName);
                 pst.setString(4, tankerNumber);
-                pst.setString(5, fat);
-                pst.setString(6, lactose);
-                pst.setString(7, SNF);
+                pst.setDouble(5,enterFat);
+                pst.setDouble(6, enterLactose);
+                pst.setDouble(7,enterSNF);
                 pst.setDouble(8, totalMilk1);
-                pst.setString(9, protein);
+                pst.setDouble(9, enterProtein);
 //                pst.setString(9, temprature);
                 pst.setString(10, remark);
                 pst.setString(11, date);
@@ -502,6 +511,128 @@ public class SellDaoImpl implements SellDao {
 
         return returnJSONObject;
     }
+    @Override
+    public JSONObject getDairyMilkBillDetailsList(String startDate, String selectedDate, String dairyId) throws JSONException, IOException {
+
+        ResultSet rs = null;
+
+        JSONObject returnJSONObject = new JSONObject();
+
+        JSONArray jarr = new JSONArray();
+
+        try {
+
+            returnJSONObject.put("success", "false");
+
+            conn = DBPool.getConnection();
+
+            Statement st = conn.createStatement();
+
+
+            String query = "";
+            if(selectedDate.equals("")){
+                query = "Select s.sellid,s.drivername,s.tankerno,s.totalmilk,s.date,s.type d.code s.dairyid from sellentry s,dairyregistration d where s.dairyid = d.dairyid";
+            } else{
+                query = "Select s.sellid,s.fat,s.snf,s.lacto,s.rate,s.totalamount, s.drivername,s.tankerno,s.totalmilk,s.date,s.type,d.code,s.dairyid,d.dairyname from sellentry s,dairyregistration d where s.date BETWEEN '" + startDate + "' AND '" + selectedDate + "' and s.dairyid='" + dairyId + "' and s.dairyid = d.dairyid";
+            }
+
+            rs = st.executeQuery(query);
+
+            if (null != rs) {
+
+                while (rs.next()) {
+                    JSONObject jobj = new JSONObject();
+                    jobj.put("sellid", rs.getString(1)); 
+                    jobj.put("fat", rs.getDouble(2));
+                    jobj.put("snf", rs.getDouble(3));
+                    jobj.put("lacto", rs.getDouble(4));
+                    jobj.put("rate", rs.getDouble(5));
+                    jobj.put("totalamount", rs.getDouble(6));
+                    jobj.put("drivername", null != rs.getString(7) ? rs.getString(7) : "");
+                    jobj.put("tankerno", null != rs.getString(8) ? rs.getString(8) : "");
+                    jobj.put("totalmilk",rs.getDouble(9));
+                    jobj.put("date", null != rs.getString(10) ? rs.getString(10) : "");
+                    jobj.put("type", null != rs.getString(11) ? rs.getString(11) : "");
+                    jobj.put("code", null != rs.getString(12) ? rs.getString(12) : "");
+                    jobj.put("dairyid",rs.getString(13));
+                    jobj.put("dairyname", null != rs.getString(13) ? rs.getString(13) : "");
+                    jarr.put(jobj);
+                }
+            }
+            returnJSONObject.put("data", jarr);
+
+            returnJSONObject.put("success", "true");
+
+        } catch (SQLException e) {
+            Logger.getLogger(SellDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+            returnJSONObject.put("success", "false");
+            returnJSONObject.put("message", e.getMessage());
+        } catch (JSONException e) {
+            Logger.getLogger(SellDaoImpl.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+            returnJSONObject.put("success", "false");
+            returnJSONObject.put("message", e.getMessage());
+        }
+        return returnJSONObject;
+    }
+    
+     @Override
+    public JSONObject getNewDate(String dairyid) throws Exception {
+
+        JSONObject returnJSONObject = new JSONObject();
+        JSONArray jarr = new JSONArray();
+        ResultSet rs = null;
+        try {
+
+            conn = DBPool.getConnection();
+            Statement st = conn.createStatement();
+            long startdate = 0;
+            String dairyID = com.mysql.jdbc.StringUtils.isNullOrEmpty(dairyid) ? "" : dairyid;
+            String query = "Select max(billgenerateddate) from milkdairybilldetails where dairyid='" + dairyID + "'";
+
+            rs = st.executeQuery(query);
+
+            if (null != rs) {
+
+                if (rs.next()) {
+                    startdate = rs.getLong(1);
+                    if(startdate == 0){ //no any record found (in case of first bill)
+                        query = "Select registrationdate from dairyregistration where dairyid='" + dairyID + "'";
+                        rs = st.executeQuery(query);
+                        if (null != rs) {
+                            if(rs.next()){
+                                startdate = rs.getLong(1);
+                            }
+                        }
+                    }
+                }
+
+                Date date = new Date(startdate);
+                SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+                String dateText = df2.format(date);
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(df2.parse(dateText));
+                c.add(Calendar.DATE, 1);
+                dateText = df2.format(c.getTime());
+
+                jarr.put(dateText);
+            }
+            returnJSONObject.put("data", jarr);
+            returnJSONObject.put("isSuccess", true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            returnJSONObject.put("data", "");
+            returnJSONObject.put("isSuccess", false);
+        } finally {
+            conn.close();
+        }
+
+        return returnJSONObject;
+    }
+
 
 
 }
